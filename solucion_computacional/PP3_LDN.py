@@ -1,14 +1,16 @@
 import random 
 from random import randint
 
+def eliminarBingos(lista):
+	lista=[]
+	return lista
+
 
 def cantidadBingos(cantidad, totalBingos=[]):
 	if(cantidad==0):
 		return totalBingos
 	else:
 		return cantidadBingos(cantidad-1, totalBingos=totalBingos+crearBingo())
-
-
 
 def crearFila(inicio,fin):
 
@@ -32,6 +34,15 @@ def matrizTraspuesta(matriz):
 
 	return traspuesta
 
+def generarIDCarton():
+	idLetras=""
+	idNumeros=""
+	for i in range(0,3):
+		idLetras=idLetras+(chr(random.randrange(97, 97 + 26)))
+		idNumeros= idNumeros+str(randint(0,9))
+
+	return idLetras.upper()+idNumeros
+
 def crearBingo():
 	bingo=[[],[],[],[],[]]
 	inicio=1
@@ -43,21 +54,6 @@ def crearBingo():
 	bingo=matrizTraspuesta(bingo)
 	bingo.append(generarIDCarton())
 	return bingo
-
-
-
-
-
-def generarIDCarton():
-	idLetras=""
-	idNumeros=""
-	for i in range(0,3):
-		idLetras=idLetras+(chr(random.randrange(97, 97 + 26)))
-		idNumeros= idNumeros+str(randint(0,9))
-
-	return idLetras.upper()+idNumeros
-
-
 
 
 
