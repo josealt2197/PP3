@@ -2,6 +2,14 @@ import random
 from random import randint
 
 
+def cantidadBingos(cantidad, totalBingos=[]):
+	if(cantidad==0):
+		return totalBingos
+	else:
+		return cantidadBingos(cantidad-1, totalBingos=totalBingos+crearBingo())
+
+
+
 def crearFila(inicio,fin):
 
 	indiceFila=0
