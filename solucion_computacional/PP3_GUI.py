@@ -3,6 +3,15 @@ from tkinter import ttk
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
+Entradas:
+Salidas:
+Restricciones:
+'''
+def comandoTemporal():
+    print("comandoTemporal")
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
 Entradas: Ninguna
 Salidas: Se configuran los objetos de la ventana principal del programa y se invoca.
 Restricciones: Ninguna
@@ -13,106 +22,184 @@ def inicio():
 
 	ventanaGestorBingos = Tk()
 	ventanaGestorBingos.title("Gestor de Bingos")
+	ventanaGestorBingos.geometry("650x400")
 	#ventanaGestorBingos.iconbitmap("Recursos/icon.ico")
 
 	ventanaGestorBingos.config(bg="#F8F9FA")
+	# ventanaGestorBingos.resizable(width=650, height=000)
 	# ventanaGestorBingos.resizable(width=0, height=0) 
 
-	tabControl = ttk.Notebook(ventanaGestorBingos) 
+	tabControl = ttk.Notebook(ventanaGestorBingos)
 
-	frGestion = Frame(tabControl, bg="#F8F9FA", height="600", width="800")
-	frJuego = Frame(tabControl, bg="#F8F9FA", height="600", width="800")
+	frGestBingo = Frame(tabControl, bg="#F8F9FA")
+	frJuego = Frame(tabControl, bg="#F8F9FA")
+	frGestJugador = Frame(tabControl, bg="#F8F9FA")
 
-	#Seccion para generar los cartones
-	subFrGenerar = Frame(frGestion, bg="#F8F9FA", height="200", width="800")
-	label1 = Label(subFrGenerar, text="Generar Cartones de Bingo: ", bg="#F8F9FA", fg="#0288d1", font=("Calibri", 12, "bold"))
-	label1.grid(row=0,column=0, sticky="w", padx=5)
-	subFrGenerar.grid(row=0,column=0, padx=5)
+	#Seccion para generar los cartones---------------------------------------------------------------------#
+	subFrGenerar = Frame(frGestBingo, bg="#F8F9FA", borderwidth = 3, relief="ridge")
+	
+	label1 = Label(subFrGenerar, text="Generar Cartones de Bingo ", bg="#F8F9FA", fg="#2196f3", font=("Calibri", 14, "bold"))
+	label1.grid(row=0,column=0, padx=5, pady=5)
 
-	#Seccion para consultar los cartones
-	subFrConsultar = Frame(frGestion, bg="#F8F9FA", height="200", width="800")
-	label2 = Label(subFrConsultar, text="Consultar Cartón: ", bg="#F8F9FA", fg="#0288d1", font=("Calibri", 12, "bold"))
+	label1_2 = Label(subFrGenerar, text="Cantidad: ", bg="#F8F9FA", fg="#2196f3", font=("Calibri", 12))
+	label1_2.grid(row=2,column=0, sticky="e", padx=5, pady=5)
+
+	cantidadCartones_StringVar = StringVar()
+	cantidadCartones = Entry(subFrGenerar, bg="#ffffff", fg="#29a891", textvariable=cantidadCartones_StringVar, width="35")
+	cantidadCartones.grid(row=2,column=1, padx=5, pady=5)
+
+	btnGenerar = Button(subFrGenerar, text="Generar", command=comandoTemporal, bg="#2196f3", fg="#ffffff", relief=GROOVE, font=("Calibri", 12))
+	btnGenerar.grid(row=2, column=2, padx=5, pady=5)
+
+	subFrGenerar.grid(row=0,column=0, sticky="nsew", padx=15, pady=15)
+
+	#Seccion para consultar los cartones-----------------------------------------------------------------#
+	subFrConsultar = Frame(frGestBingo, bg="#F8F9FA", borderwidth = 3, relief="ridge")
+	
+	label2 = Label(subFrConsultar, text="Consultar Cartón: ", bg="#F8F9FA", fg="#2196f3", font=("Calibri", 14, "bold"))
 	label2.grid(row=0,column=0, sticky="w", padx=5)
-	subFrConsultar.grid(row=1,column=0, padx=5)
+	
+	label2_2 = Label(subFrConsultar, text="Identificación: ", bg="#F8F9FA", fg="#2196f3", font=("Calibri", 12))
+	label2_2.grid(row=2,column=0, sticky="e", padx=5, pady=5)
 
-	#Seccion para registrar jugadores
-	subFrRegistrar = Frame(frGestion, bg="#F8F9FA", height="200", width="800")
-	label3 = Label(subFrRegistrar, text="Registrar jugador: ", bg="#F8F9FA", fg="#0288d1", font=("Calibri", 12, "bold"))
+	codigoCarton_StringVar = StringVar()
+	codigoCarton = Entry(subFrConsultar, bg="#ffffff", fg="#29a891", textvariable=codigoCarton_StringVar, width="35")
+	codigoCarton.grid(row=2,column=1, padx=5, pady=5)
+
+	btnMostrar = Button(subFrConsultar, text="Generar", command=comandoTemporal, bg="#2196f3", fg="#ffffff", relief=GROOVE, font=("Calibri", 12))
+	btnMostrar.grid(row=2, column=2, padx=5, pady=5)
+
+	subFrConsultar.grid(row=1,column=0, sticky="nsew", padx=15, pady=15)
+
+	#Seccion para registrar jugadores--------------------------------------------------------------------#
+	subFrRegistrar = Frame(frGestJugador, bg="#F8F9FA", borderwidth = 3, relief="ridge")
+	label3 = Label(subFrRegistrar, text="Registrar jugador: ", bg="#F8F9FA", fg="#4caf50", font=("Calibri", 12, "bold"))
 	label3.grid(row=0,column=0, sticky="w", padx=5)
-	subFrRegistrar.grid(row=2,column=0, padx=5)
 
-	#Seccion para enviar cartones
-	subFrEnviar = Frame(frGestion, bg="#F8F9FA", height="200", width="800")
-	label4 = Label(subFrEnviar, text="Enviar cartón a jugador registrado: ", bg="#F8F9FA", fg="#0288d1", font=("Calibri", 12, "bold"))
+	label3_2 = Label(subFrRegistrar, text="Nombre: ", bg="#F8F9FA", fg="#4caf50", font=("Calibri", 12))
+	label3_2.grid(row=2,column=0, sticky="e", padx=5, pady=5)
+
+	nombreJugador_StringVar = StringVar()
+	nombreJugador = Entry(subFrRegistrar, bg="#ffffff", fg="#29a891", textvariable=nombreJugador_StringVar, width="40")
+	nombreJugador.grid(row=2,column=1, padx=5, pady=5)
+
+	label3_3 = Label(subFrRegistrar, text="Cédula: ", bg="#F8F9FA", fg="#4caf50", font=("Calibri", 12))
+	label3_3.grid(row=2,column=2, sticky="e", padx=5, pady=5)
+
+	cedulaJugador_StringVar = StringVar()
+	cedulaJugador = Entry(subFrRegistrar, bg="#ffffff", fg="#29a891", textvariable=cedulaJugador_StringVar, width="20")
+	cedulaJugador.grid(row=2,column=3, padx=5, pady=5)
+
+	label3_4 = Label(subFrRegistrar, text="Correo: ", bg="#F8F9FA", fg="#4caf50", font=("Calibri", 12))
+	label3_4.grid(row=3,column=0, sticky="e", padx=5, pady=5)
+
+	correoJugador_StringVar = StringVar()
+	correoJugador = Entry(subFrRegistrar, bg="#ffffff", fg="#29a891", textvariable=correoJugador_StringVar, width="40")
+	correoJugador.grid(row=3,column=1, padx=5, pady=5)
+
+	btnGuardar = Button(subFrRegistrar, text="Guardar", command=comandoTemporal, bg="#4caf50", fg="#ffffff", relief=GROOVE, font=("Calibri", 12))
+	btnGuardar.grid(row=3, column=3, sticky="e", padx=5, pady=5)
+
+	subFrRegistrar.grid(row=2,column=0, sticky="nsew", padx=15, pady=15)
+
+	#Seccion para enviar cartones-----------------------------------------------------------------------#
+	subFrEnviar = Frame(frGestJugador, bg="#F8F9FA", borderwidth = 3, relief="ridge")
+	
+	label4 = Label(subFrEnviar, text="Enviar cartón a jugador registrado: ", bg="#F8F9FA", fg="#4caf50", font=("Calibri", 12, "bold"))
 	label4.grid(row=0,column=0, sticky="w", padx=5)
-	subFrEnviar.grid(row=3,column=0, padx=5)
 
-	#Seccion para iniciar juego
-	subFrIniciar = Frame(frJuego, bg="#F8F9FA", height="400", width="800") 
-	label5 = Label(subFrIniciar, text="Iniciar juego de Bingo: ", bg="#F8F9FA", fg="#0288d1", font=("Calibri", 12, "bold"))
+	label4_2 = Label(subFrEnviar, text="Cantidad: ", bg="#F8F9FA", fg="#4caf50", font=("Calibri", 12))
+	label4_2.grid(row=2,column=0, sticky="e", padx=5, pady=5)
+
+	nombreJugador_StringVar = StringVar()
+	nombreJugador = Entry(subFrEnviar, bg="#ffffff", fg="#29a891", textvariable=nombreJugador_StringVar, width="35")
+	nombreJugador.grid(row=2,column=1, padx=5, pady=5)
+
+	label4_3 = Label(subFrEnviar, text="Cédula: ", bg="#F8F9FA", fg="#4caf50", font=("Calibri", 12))
+	label4_3.grid(row=3,column=0, sticky="e", padx=5, pady=5)
+
+	cedulaJugador_StringVar = StringVar()
+	cedulaJugador = Entry(subFrEnviar, bg="#ffffff", fg="#29a891", textvariable=cedulaJugador_StringVar, width="35")
+	cedulaJugador.grid(row=3,column=1, padx=5, pady=5)
+
+	btnGuardar = Button(subFrEnviar, text="Guardar", command=comandoTemporal, bg="#4caf50", fg="#ffffff", relief=GROOVE, font=("Calibri", 12))
+	btnGuardar.grid(row=3, column=3, sticky="e", padx=5, pady=5)
+
+	subFrEnviar.grid(row=3,column=0, sticky="nsew", padx=15, pady=15)
+
+	#Seccion para iniciar juego-------------------------------------------------------------------------#
+	subFrIniciar = Frame(frJuego, bg="#F8F9FA", borderwidth = 3, relief="ridge") 
+	
+	label5 = Label(subFrIniciar, text="Iniciar juego de Bingo: ", bg="#F8F9FA", fg="#f44336", font=("Calibri", 12, "bold"))
 	label5.grid(row=0,column=0, sticky="w", padx=5)
-	subFrIniciar.grid(row=4,column=0, padx=5)
 
-	#Seccion para visualizar juego
-	subFrJugar = Frame(frJuego, bg="#F8F9FA", height="400", width="800")
-	label6 = Label(subFrJugar, text="Tipo de juego: ", bg="#F8F9FA", fg="#0288d1", font=("Calibri", 12, "bold"))
+	label5_2 = Label(subFrIniciar, text="Cantidad: ", bg="#F8F9FA", fg="#f44336", font=("Calibri", 12))
+	label5_2.grid(row=2,column=0, sticky="e", padx=5, pady=5)
+
+	opcionJuego = [ "Jugar en X", "Cuatro esquinas", "Cartón lleno", "Jugar en Z" ] 
+
+	opcionJuego_StringVar = StringVar()
+	opcionJuego = OptionMenu(subFrIniciar, opcionJuego_StringVar, *opcionJuego)
+	opcionJuego.config(width=20, bg="#F8F9FA", fg="#f44336", font=("Calibri", 12,))
+	opcionJuego.grid(row=2,column=1, padx=5, pady=5)
+
+	label5_3 = Label(subFrIniciar, text="Premio: ", bg="#F8F9FA", fg="#f44336", font=("Calibri", 12))
+	label5_3.grid(row=3,column=0, sticky="e", padx=5, pady=5)
+
+	premio_StringVar = StringVar()
+	premio = Entry(subFrIniciar, bg="#ffffff", fg="#29a891", textvariable=premio_StringVar, width="35")
+	premio.grid(row=3,column=1, padx=5, pady=5)
+
+	btnIniciar = Button(subFrIniciar, text="Iniciar", command=comandoTemporal, bg="#f44336", fg="#ffffff", relief=GROOVE, font=("Calibri", 12))
+	btnIniciar.grid(row=3, column=3, sticky="e", padx=5, pady=5)
+
+	subFrIniciar.grid(row=4,column=0, sticky="nsew", padx=15, pady=15)
+
+	#Seccion para visualizar juego----------------------------------------------------------------------#
+	subFrJugar = Frame(frJuego, bg="#F8F9FA", borderwidth = 3, relief="ridge")
+
+	label6 = Label(subFrJugar, text="Tipo de juego: ", bg="#F8F9FA", fg="#f44336", font=("Calibri", 12, "bold"))
 	label6.grid(row=0,column=0, sticky="w", padx=5)
-	subFrJugar.grid(row=5,column=0, padx=5)
 
-	# frameTexto = Frame(frPrincipal, width=250, height=350)
+	label6_2 = Label(subFrJugar, text="Cuatro Esquinas ", bg="#F8F9FA", fg="#f44336", font=("Calibri", 12))
+	label6_2.grid(row=0,column=1, sticky="e", padx=5, pady=5)
 
-	# txtDocumento = Text(frameTexto)
+	label6_3 = Label(subFrJugar, text="Premio: ", bg="#F8F9FA", fg="#f44336", font=("Calibri", 12))
+	label6_3.grid(row=0,column=3, sticky="e", padx=5, pady=5)
 
-	# scrollbarTexto = Scrollbar(frameTexto)
-	# txtDocumento = Text(frameTexto, width=70, height=25)
-	# scrollbarTexto.pack(side=RIGHT,fill=Y)
-	# txtDocumento.pack(side=LEFT, fill=Y)
-	# scrollbarTexto.config(command=txtDocumento.yview)
-	# txtDocumento.config(yscrollcommand=scrollbarTexto.set)
+	premioJuego_StringVar = StringVar()
+	premioJuego = Entry(subFrJugar, bg="#ffffff", fg="#29a891", textvariable=premioJuego_StringVar, width="35")
+	premioJuego.grid(row=0,column=4, padx=5, pady=5)
 
-	# treeViewTokens = ttk.Treeview(frPrincipal) 
+	btnCantar = Button(subFrJugar, text="Cantar Número", command=comandoTemporal, bg="#f44336", fg="#ffffff", relief=GROOVE, font=("Calibri", 12))
+	btnCantar.grid(row=1, column=2, padx=5, pady=5)
 
-	# frBtnDocumento = Frame(frPrincipal, padx=5, pady=5, bg="#F8F9FA")
-	# btnAbrirArchivo = Button(frBtnDocumento, text="Abrir Archivo", command=comandoLeerArchivo, bg="#0288d1", fg="#ffffff", relief=GROOVE, font=("Calibri", 12))
-	# btnAbrirArchivo.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
-	# btnLimpiarTexto = Button(frBtnDocumento, text="Limpiar Texto", command=comandoReiniciarDocumento, bg="#0288d1", fg="#ffffff", relief=GROOVE, font=("Calibri", 12)) 
-	# btnLimpiarTexto.grid(row=0, column=1, sticky="ew", padx=5)
+	frameTexto = Frame(subFrJugar, width=75, height=50)
 
-	# frBtnLista = Frame(frPrincipal, padx=5, pady=5, bg="#F8F9FA")
-	# btnTokenizar = Button(frBtnLista, text="Tokenizar", command=comandoTokenizarDocumento, bg="#0288d1", fg="#ffffff", relief=GROOVE, font=("Calibri", 12))
-	# btnTokenizar.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
-	# btnTraducir = Button(frBtnLista, text="Traducir", command=comandoTraducirTokens, bg="#0288d1", fg="#ffffff",  relief=GROOVE, font=("Calibri", 12))
-	# btnTraducir.grid(row=0, column=1, sticky="ew", padx=5)
+	txtNumCantados = Text(frameTexto)
 
-	# btnGenerarHtml = Button(frPrincipal, text="Generar HTML", command=comandoGenerarHTML, bg="#0288d1", fg="#ffffff", state="disabled", relief=GROOVE, font=("Calibri", 12))
+	scrollbarTexto = Scrollbar(frameTexto)
+	txtNumCantados = Text(frameTexto, width=35, height=10)
+	scrollbarTexto.pack(side=RIGHT,fill=Y)
+	txtNumCantados.pack(side=LEFT, fill=Y)
+	scrollbarTexto.config(command=txtNumCantados.yview)
+	txtNumCantados.config(yscrollcommand=scrollbarTexto.set)
 
-	# label1.grid(row=0,column=0, sticky="w", padx=5)
-	# frameTexto.grid(row=1, column=0, sticky="ns", padx=10)
-	# frBtnDocumento.grid(row=2, column=0, sticky="se", padx=5, pady=10)
-	# label2.grid(row=0, column=1, sticky="w", padx=5)
-	# treeViewTokens.grid(row=1, column=1, sticky="ns", padx=5)
-	# frBtnLista.grid(row=2, column=1, sticky="e", padx=5, pady=10)
-	# btnGenerarHtml.grid(row=1, column=2, sticky="n", padx=5)
+	frameTexto.grid(row=2,  padx=10, pady=10)
 
-	# frPrincipal.pack()
+	subFrJugar.grid(row=5,column=0, sticky="nsew", padx=15, pady=15)
 
 	# menuBar = Menu(ventanaGestorBingos)
-	# menuSuperiorA = Menu(menuBar, tearoff=0)
-	# menuSuperiorA.add_command(label="Abrir un archivo", command=comandoLeerArchivo)
-	# menuSuperiorA.add_command(label="Borrar valores", command=reiniciarValores)
-	# menuSuperiorA.add_command(label="Salir del programa", command=comandoSalir)
-	# menuBar.add_cascade(label="Opciones", menu=menuSuperiorA)
 	# menuSuperiorB = Menu(menuBar, tearoff=0)
-	# menuSuperiorB.add_command(label="Manual de Usuario", command=comandoAbrirManual)
-	# menuSuperiorB.add_command(label="Acerca de", command=comandoAcercaDe)
-	# menuBar.add_cascade(label="Ayuda", menu=menuSuperiorB)
-	# ventanaGestorBingos.config(menu=menuBar)
-
-
+	# menuSuperiorB.add_command(label="Manual de Usuario", command=comandoTemporal)
+	# menuSuperiorB.add_command(label="Acerca de", command=comandoTemporal)
+	# menuBar.add_cascade(label="Ayuda", menu=comandoTemporal)
+	# ventanaGestorBingos.config(menu=comandoTemporal)
 
 	#Agregar las pestañas
-	tabControl.add(frGestion, text ='Gestionar Juego') 
-	tabControl.add(frJuego, text ='Juego Nuevo') 
+	tabControl.add(frGestBingo, text ='Gestionar Juego', sticky="nsew") 
+	tabControl.add(frJuego, text ='Juego Nuevo', sticky="nsew") 
+	tabControl.add(frGestJugador, text ='Gestionar Jugadores', sticky="nsew") 
 	tabControl.pack(expand = 1, fill ="both") 
 
 	ventanaGestorBingos.mainloop()
