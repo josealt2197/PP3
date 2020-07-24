@@ -224,7 +224,7 @@ def inicio():
 	# ventanaGestorBingos.config(menu=comandoTemporal)
 
 	# #Agregar las pestañas
-	tabControl.add(frGestBingo, text ='Gestionar Juego', font=("Calibri", 12)) 
+	tabControl.add(frGestBingo, text ='Gestionar Juego') 
 	tabControl.add(frJuego, text ='Juego Nuevo') 
 	tabControl.add(frGestJugador, text ='Gestionar Jugadores') 
 	tabControl.pack(expand = 1, fill ="both") 
