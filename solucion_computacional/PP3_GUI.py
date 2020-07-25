@@ -1,5 +1,38 @@
+#Proyecto Programado 3 - Grupo: 01 
+#Interfaz Gráfica para el programa de Gestión de un Bingo.
+#Estudiantes: Jose Manuel Altamirano Salazar - 2020426159
+#             Josué Brenes Alfaro - 2020054427
+
+import PP3_LDN as LDN
 from tkinter import *                   
 from tkinter import ttk 
+from tkinter import messagebox
+
+#-----------------------------------------------------------------------------------------------------------#
+#Lista de Variables Globales
+cantidadCartones=""
+codigoCarton=""
+opcionJuego=""
+premio=""
+labelTipo=""
+premioJuego=""
+txtNumCantados=""
+nombreJugador=""
+cedulaJugador=""
+correoJugador=""
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas:Un caracter 
+Salidas:True si el caracter es un numero o False si el caracter no es un numero con decimales
+Restricciones:No valida restricciones
+'''
+def esNumero(caracter):
+    try:
+        resultado = int(caracter)
+        return True
+    except:
+        return False
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -7,8 +40,102 @@ Entradas:
 Salidas:
 Restricciones:
 '''
-def comandoTemporal():
-    print("comandoTemporal")
+def comandoGenerarCartones():
+	global cantidadCartones
+
+	cantidadStr=cantidadCartones.get()
+	cantidadNum=0
+
+	if(cantidadStr==""):
+		messagebox.showwarning("Texto Vacío","No se ha ingresado la cantidad requerida")
+		
+	else:
+		if(esNumero(cantidadStr)==True):
+			cantidadNum = int(cantidadStr)
+
+			if (cantidadNum>=1 and cantidadNum<=500):
+
+				resultado=messagebox.askquestion('Generar Cartones','¿Desea generar '+str(cantidadNum)+' cartones? \nEste proceso podría tomar un momento')
+
+				if (resultado=='yes'):
+
+					valorRetorno = LDN.generarBingos(cantidadNum)
+
+					if(valorRetorno != -1):
+						messagebox.showinfo("Cartones Generados","Todos los cartones han sido generados.")
+						cantidadCartones.delete(0,END)					
+					else:
+						messagebox.showerror("Error al Generar","Se ha producido un error al generar los cartones")	  
+			else:
+				messagebox.showwarning("Número no valido","La cantidad debe ser un número entre 1 y 500.")
+		else:
+			messagebox.showwarning("Valor no válido","La cantidad ingresada debe ser un número.")
+
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas:
+Salidas:
+Restricciones:
+'''
+def comandoMostrarCarton():
+    print("comandoMostrarCarton")
+
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas:
+Salidas:
+Restricciones:
+'''
+def comandoIniciarJuego():
+    print("comandoIniciarJuego")
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas:
+Salidas:
+Restricciones:
+'''
+def comandoCantarNumero():
+    print("comandoCantarNumero")
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas:
+Salidas:
+Restricciones:
+'''
+def comandoRegistrarJugador():
+	global nombreJugador
+	global cedulaJugador
+	global correoJugador
+
+	nombre=nombreJugador.get()
+	cedula=cedulaJugador.get()
+	correo=correoJugador.get()
+
+	if(nombre=="" or cedula=="" or correo==""):
+		messagebox.showwarning("Texto Vacío","Deben completarse todos los espacios.")	
+	else:
+		valorRetorno = LDN.agregarJugadorCSV(nombre, cedula, correo)
+
+		if(valorRetorno != -1):
+			messagebox.showinfo("Jugador Agregado","Los datos del jugador se han guardado con exito.")
+			cantidadCartones.delete(0,END)					
+		else:
+			messagebox.showerror("Error al Guardar","Se ha producido un error al guardar los datos.")	  
+
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas:
+Salidas:
+Restricciones:
+'''
+def comandoEnviarCartones():
+    print("comandoEnviarCartones")
+
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -18,7 +145,16 @@ Restricciones: Ninguna
 '''
 def inicio():
 
-	# global txtDocumento
+	global cantidadCartones
+	global codigoCarton
+	global opcionJuego
+	global premio
+	global labelTipo
+	global premioJuego
+	global txtNumCantados
+	global nombreJugador
+	global cedulaJugador
+	global correoJugador
 
 	ventanaGestorBingos = Tk()
 	ventanaGestorBingos.title("Gestor de Bingos")
@@ -58,7 +194,7 @@ def inicio():
 	cantidadCartones = Entry(subFrGenerar, bg="#ffffff", fg="#000000", textvariable=cantidadCartones_StringVar, width="20", font=("Calibri", 18))
 	cantidadCartones.grid(row=1, column=1, padx=5, pady=5)
 
-	btnGenerar = Button(subFrGenerar, text="Generar", command=comandoTemporal, bg="#2196f3", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
+	btnGenerar = Button(subFrGenerar, text="Generar", command=comandoGenerarCartones, bg="#2196f3", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
 	btnGenerar.grid(row=1, column=2, padx=5, pady=5)
 
 	subFrGenerar.grid(row=0, column=0, padx=15, sticky="nsew", pady=15)
@@ -78,7 +214,7 @@ def inicio():
 	codigoCarton = Entry(subFrConsultar, bg="#ffffff", fg="#000000", textvariable=codigoCarton_StringVar, width="20", font=("Calibri", 18))
 	codigoCarton.grid(row=1,column=1, padx=5, pady=5)
 
-	btnMostrar = Button(subFrConsultar, text="Mostrar", command=comandoTemporal, bg="#2196f3", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
+	btnMostrar = Button(subFrConsultar, text="Mostrar", command=comandoMostrarCarton, bg="#2196f3", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
 	btnMostrar.grid(row=1, column=2, padx=5, pady=5)
 
 	frameImagen = Frame(subFrConsultar, width=150, height=150)
@@ -108,10 +244,10 @@ def inicio():
 	label3_3.grid(row=1,column=2, sticky="e", padx=5, pady=5)
 
 	premio_StringVar = StringVar()
-	premio = Entry(subFrIniciar, bg="#ffffff", fg="#29a891", textvariable=premio_StringVar, width="20", font=("Calibri", 14,))
+	premio = Entry(subFrIniciar, bg="#ffffff", fg="#000000", textvariable=premio_StringVar, width="20", font=("Calibri", 14,))
 	premio.grid(row=1,column=3, padx=5, pady=5)
 
-	btnIniciar = Button(subFrIniciar, text="Iniciar", command=comandoTemporal, bg="#e64a19", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
+	btnIniciar = Button(subFrIniciar, text="Iniciar", command=comandoIniciarJuego, bg="#e64a19", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
 	btnIniciar.grid(row=2, column=1, columnspan = 2, sticky="e", padx=5, pady=5)
 
 	subFrIniciar.grid(row=0,column=0, padx=15, sticky="nsew", pady=15)
@@ -121,17 +257,17 @@ def inicio():
 	subFrJugar.rowconfigure((0,1,2,3), weight=1)
 	subFrJugar.columnconfigure((0,1,2,3), weight=1)
 
-	label4 = Label(subFrJugar, text="Tipo de juego: Cuatro Esquinas", bg="#F8F9FA", fg="#e64a19", font=("Calibri", 14))
-	label4.grid(row=0,column=0, sticky="w", padx=5)
+	labelTipo = Label(subFrJugar, text="Tipo de juego: Cuatro Esquinas", bg="#F8F9FA", fg="#e64a19", font=("Calibri", 14))
+	labelTipo.grid(row=0,column=0, sticky="w", padx=5)
 
 	label4_2 = Label(subFrJugar, text="Premio: ", bg="#F8F9FA", fg="#e64a19", font=("Calibri", 14))
 	label4_2.grid(row=0,column=2, sticky="e", padx=5, pady=5)
 
 	premioJuego_StringVar = StringVar()
-	premioJuego = Entry(subFrJugar, bg="#ffffff", fg="#29a891", textvariable=premioJuego_StringVar, width="20", font=("Calibri", 14))
+	premioJuego = Entry(subFrJugar, bg="#ffffff", fg="#000000", textvariable=premioJuego_StringVar, width="20", font=("Calibri", 14))
 	premioJuego.grid(row=0,column=3, padx=5, pady=5)
 
-	btnCantar = Button(subFrJugar, text="Cantar Número", command=comandoTemporal, bg="#e64a19", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
+	btnCantar = Button(subFrJugar, text="Cantar Número", command=comandoCantarNumero, bg="#e64a19", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
 	btnCantar.grid(row=1, column=1, columnspan = 2, padx=5, pady=5)
 
 	frameTexto = Frame(subFrJugar, width=75, height=50)
@@ -167,24 +303,24 @@ def inicio():
 	label5_2.grid(row=1,column=0, sticky="e", padx=5, pady=5)
 
 	nombreJugador_StringVar = StringVar()
-	nombreJugador = Entry(subFrRegistrar, bg="#ffffff", fg="#29a891", textvariable=nombreJugador_StringVar, width="25", font=("Calibri", 14))
+	nombreJugador = Entry(subFrRegistrar, bg="#ffffff", fg="#000000", textvariable=nombreJugador_StringVar, width="25", font=("Calibri", 14))
 	nombreJugador.grid(row=1,column=1, sticky="w",padx=5, pady=5)
 
 	label5_3 = Label(subFrRegistrar, text="Cédula: ", bg="#F8F9FA", fg="#4caf50", font=("Calibri", 14))
 	label5_3.grid(row=1,column=2, sticky="e", padx=5, pady=5)
 
 	cedulaJugador_StringVar = StringVar()
-	cedulaJugador = Entry(subFrRegistrar, bg="#ffffff", fg="#29a891", textvariable=cedulaJugador_StringVar, width="15", font=("Calibri", 14))
+	cedulaJugador = Entry(subFrRegistrar, bg="#ffffff", fg="#000000", textvariable=cedulaJugador_StringVar, width="15", font=("Calibri", 14))
 	cedulaJugador.grid(row=1,column=3, sticky="w", padx=5, pady=5)
 
 	label5_4 = Label(subFrRegistrar, text="Correo: ", bg="#F8F9FA", fg="#4caf50", font=("Calibri", 14))
 	label5_4.grid(row=2,column=0, sticky="e", padx=5, pady=5)
 
 	correoJugador_StringVar = StringVar()
-	correoJugador = Entry(subFrRegistrar, bg="#ffffff", fg="#29a891", textvariable=correoJugador_StringVar, width="25", font=("Calibri", 14))
+	correoJugador = Entry(subFrRegistrar, bg="#ffffff", fg="#000000", textvariable=correoJugador_StringVar, width="25", font=("Calibri", 14))
 	correoJugador.grid(row=2,column=1, sticky="w", padx=5, pady=5)
 
-	btnGuardar = Button(subFrRegistrar, text="Guardar", command=comandoTemporal, bg="#4caf50", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
+	btnGuardar = Button(subFrRegistrar, text="Guardar", command=comandoRegistrarJugador, bg="#4caf50", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
 	btnGuardar.grid(row=2, column=3, sticky="w", padx=5, pady=5)
 
 	subFrRegistrar.grid(row=0,column=0, padx=15, pady=15, sticky="nsew")
@@ -201,17 +337,17 @@ def inicio():
 	label6_2.grid(row=1,column=0, sticky="e", padx=5, pady=5)
 
 	cantidadEnviar_StringVar = StringVar()
-	cantidadEnviar = Entry(subFrEnviar, bg="#ffffff", fg="#29a891", textvariable=cantidadEnviar_StringVar, width="25", font=("Calibri", 14))
+	cantidadEnviar = Entry(subFrEnviar, bg="#ffffff", fg="#000000", textvariable=cantidadEnviar_StringVar, width="25", font=("Calibri", 14))
 	cantidadEnviar.grid(row=1,column=1, sticky="w",padx=5, pady=5)
 
 	label6_3 = Label(subFrEnviar, text="Cédula: ", bg="#F8F9FA", fg="#4caf50", font=("Calibri", 14))
 	label6_3.grid(row=1,column=2, sticky="e", padx=5, pady=5)
 
 	cedulaEnviar_StringVar = StringVar()
-	cedulaEnviar = Entry(subFrEnviar, bg="#ffffff", fg="#29a891", textvariable=cedulaEnviar_StringVar, width="15", font=("Calibri", 14))
+	cedulaEnviar = Entry(subFrEnviar, bg="#ffffff", fg="#000000", textvariable=cedulaEnviar_StringVar, width="15", font=("Calibri", 14))
 	cedulaEnviar.grid(row=1,column=3, sticky="w", padx=5, pady=5)
 
-	btnEnviar = Button(subFrEnviar, text="Enviar Cartones Digitales", command=comandoTemporal, bg="#4caf50", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
+	btnEnviar = Button(subFrEnviar, text="Enviar Cartones Digitales", command=comandoEnviarCartones, bg="#4caf50", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
 	btnEnviar.grid(row=2, column=3, sticky="w", padx=5, pady=5)
 
 	subFrEnviar.grid(row=1,column=0, padx=15, pady=15, sticky="nsew")
