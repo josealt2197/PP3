@@ -7,6 +7,10 @@ import csv
 import random 
 from random import randint
 
+import smtplib, ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
 cartonesCompletos = []
 
 #-----------------------------------------------------------------------------------------------------------#
@@ -128,7 +132,7 @@ def generarBingos(cantidad, totalBingos=[]):
 	try:
 		if(cantidad==0):
 			cartonesCompletos = totalBingos
-			print(cartonesCompletos)
+			# print(cartonesCompletos)
 			return 1
 		else:
 			return generarBingos(cantidad-1, totalBingos=totalBingos+[crearBingo()])
@@ -195,10 +199,129 @@ def leerArchivoCSV():
 
 	return listaJugadores[1:]
 
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas: Ninguna
+Salidas: Lista de CORREOS de los jugadores dentro del archivo CSV 
+Restricciones: No valida restricciones.
+'''
+def obtenerCorreos():
+	listaJugadores = leerArchivoCSV()
+	listaCorreos = []
+	
+	for jugador in listaJugadores:
+		listaCorreos.append(jugador[2]) 
+
+	return listaCorreos
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas: Ninguna
+Salidas: Lista de CEDULAS de los jugadores dentro del archivo CSV 
+Restricciones: No valida restricciones.
+'''
+def obtenerCedulas():
+	listaJugadores = leerArchivoCSV()
+	listaCedulas = []
+	
+	for jugador in listaJugadores:
+		listaCedulas.append(jugador[1]) 
+
+	return listaCedulas
 
 
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas: Cadena de caracteres con el valor de la cedula de un jugador
+Salidas: 
+		-> 1 si la cedula recibida se encuentra dentro de las de los jugadores registrados
+		-> -1 si la cedula recibida NO se encuentra dentro de las de los jugadores registrados
+Restricciones: No valida restricciones.
+'''
+def validarCedula(pCedula):
+	listaCedulas = obtenerCedulas()
+	
+	for cedula in listaCedulas:
+		if(cedula==pCedula):
+			return 1
 
+	return -1
 
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas: Ninguna
+Salidas: Envía los cartones seleccionados al usuario recibido 
+Restricciones: No valida restricciones.
+'''
+def enviarCorreo(correo):
+    
+    correoDeEnvio = "proyecto3bingo@gmail.com"
+    correoReceptor = correo
+    contrasena = "cursoTEC2020"
+
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "Cartón para Juego de Bingo"
+    message["From"] = correoDeEnvio
+    message["To"] = correoReceptor
+
+    text = """\
+    Hola,
+    ¿Como estás?
+    Te hemos adjuntado tu(s) cartón(es) para el Bingo"""
+    html = """\
+    <html>
+      <body>
+        <p>Hola,<br>
+           ¿Como estás?<br>
+           Te hemos adjuntado tu(s) cartón(es) para el Bingo
+        </p>
+      </body>
+    </html>
+    """
+
+    # Turn these into plain/html MIMEText objects
+    parte1 = MIMEText(text, "plain")
+    parte2 = MIMEText(html, "html")
+
+    # Add HTML/plain-text parts to MIMEMultipart message
+    # The email client will try to render the last part first
+    message.attach(parte1)
+    message.attach(parte2)
+
+    # Create secure connection with server and send email
+    try:
+	    context = ssl.create_default_context()
+	    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+	        server.login(correoDeEnvio, contrasena)
+	        server.sendmail(
+	            correoDeEnvio, correoReceptor, message.as_string()
+	        )
+
+	    return 1
+    except Exception as e:
+    	print(e)
+    	return -1
+ 
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas: Cadena de caracteres con el valor de la cedula de un jugador
+Salidas: 
+		-> 1 si la cedula recibida se encuentra dentro de las de los jugadores registrados
+		-> -1 si la cedula recibida NO se encuentra dentro de las de los jugadores registrados
+Restricciones: No valida restricciones.
+'''
+def enviarCartones(pCedula):
+	listaCedulas = obtenerCedulas()
+	listaCorreos = obtenerCorreos()
+
+	for indice in range(0, len(listaCedulas)):
+		if(listaCedulas[indice]==pCedula):
+			if(enviarCorreo(listaCorreos[indice])==1):
+				break
+			else:
+				return -1
+
+	return 1
 
 
 

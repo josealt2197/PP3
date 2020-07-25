@@ -20,6 +20,8 @@ txtNumCantados=""
 nombreJugador=""
 cedulaJugador=""
 correoJugador=""
+cantidadEnviar=""
+cedulaEnviar=""
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -134,7 +136,23 @@ Salidas:
 Restricciones:
 '''
 def comandoEnviarCartones():
-    print("comandoEnviarCartones")
+	global cantidadEnviar
+	global cedulaEnviar
+
+	cantidad=0
+
+	if(cantidadEnviar.get() =="" or cedulaEnviar.get()==""):
+		messagebox.showwarning("Texto Vacío","Deben completarse todos los espacios.")
+		
+	elif(esNumero(cantidadEnviar.get())==True):
+		cedula=cedulaEnviar.get()
+		cantidad=int(cantidadEnviar.get())
+
+		if(LDN.validarCedula(cedula)==1):
+			if(LDN.enviarCartones(cedula)==1):
+				messagebox.showinfo("Cartones Enviados","Los cartones ha sido enviados al jugador.")	
+		else:
+			messagebox.showerror("Error en Cédula","El valor ingresado para la cédula, no corresponde a ningún jugador.")	 
 
 
 #-----------------------------------------------------------------------------------------------------------#
@@ -155,6 +173,8 @@ def inicio():
 	global nombreJugador
 	global cedulaJugador
 	global correoJugador
+	global cantidadEnviar
+	global cedulaEnviar
 
 	ventanaGestorBingos = Tk()
 	ventanaGestorBingos.title("Gestor de Bingos")
