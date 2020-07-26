@@ -23,6 +23,8 @@ cedulaJugador=""
 correoJugador=""
 cantidadEnviar=""
 cedulaEnviar=""
+frameImagen=""
+subFrConsultar=""
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -82,7 +84,29 @@ Salidas:
 Restricciones:
 '''
 def comandoMostrarCarton():
-    print("comandoMostrarCarton")
+	global codigoCarton
+	global frameImagen
+	global subFrConsultar
+
+	codigo=codigoCarton.get()
+
+	if(codigo==""):
+		messagebox.showwarning("Texto Vacío","Deben ingresar un código para el identificador.")	
+	else:
+		valorRetorno = LDN.obtenerImagenCarton(codigo)
+
+		if(valorRetorno != -1):
+			
+			# frameImagen.destroy()
+			# frameImagen = Frame(subFrConsultar, width=220, height=252)
+			# frameImagen.grid(row=2, column=1, padx=5, pady=5)
+			img = Image.open('Cartones\\'+codigo+'.png')
+			img = img.resize((220, 252), Image.BICUBIC)
+			tkimage = ImageTk.PhotoImage(img)
+			labelImage = Label(frameImagen, image=tkimage, width=220, height=252).pack()
+
+		else:
+			messagebox.showerror("Error al Obtener","No se ha poddo obtener un cartón para el código ingresado. ")	
 
 
 #-----------------------------------------------------------------------------------------------------------#
@@ -176,6 +200,7 @@ def inicio():
 	global correoJugador
 	global cantidadEnviar
 	global cedulaEnviar
+	global frameImagen
 
 	ventanaGestorBingos = Tk()
 	ventanaGestorBingos.title("Gestor de Bingos")
@@ -241,7 +266,7 @@ def inicio():
 	frameImagen = Frame(subFrConsultar, width=220, height=252)
 	frameImagen.grid(row=2, column=1, padx=5, pady=5)
 
-	img = Image.open('Cartones\\GUM894.png')
+	img = Image.open('Cartones\AJZ126.png')
 	img = img.resize((220, 252), Image.BICUBIC)
 	tkimage = ImageTk.PhotoImage(img)
 	labelImage = Label(frameImagen, image=tkimage, width=220, height=252).pack()
@@ -386,8 +411,8 @@ def inicio():
 	# ventanaGestorBingos.config(menu=comandoTemporal)
 
 	# #Agregar las pestañas
+	tabControl.add(frGestBingo, text ='Gestionar Cartones') 
 	tabControl.add(frGestJugador, text ='Gestionar Jugadores')
-	tabControl.add(frGestBingo, text ='Gestionar Juego') 
 	tabControl.add(frJuego, text ='Juego Nuevo') 
 	tabControl.pack(expand = 1, fill ="both") 
 

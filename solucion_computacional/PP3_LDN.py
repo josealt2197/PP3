@@ -398,9 +398,9 @@ def generarImagenCarton(cartonBingo):
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas: 
-Salidas: 
-Restricciones: 
+Entradas: Ninguna
+Salidas: creacion de las imagenes en formato png para los "cartones" del bingo.
+Restricciones: Ninguna
 '''
 def generarImagenes():
 	global cartonesCompletos
@@ -430,3 +430,23 @@ def validarCarton(listaCartones,carton):
 		if (cartonEnLista[:-1]==carton):
 			return -1
 	return 1
+
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas: 
+Salidas: 
+Restricciones: 
+'''
+def obtenerImagenCarton(codigo):
+	global cartonesAsignados
+
+	try:
+		for i in range(0, len(cartonesAsignados)):
+			cartonEnLista=cartonesAsignados[i]
+			if (cartonEnLista[0]==codigo):
+				return 1
+
+	except Exception as e:
+		print(e)
+		return -1
