@@ -4,14 +4,16 @@
 #             Josué Brenes Alfaro - 2020054427
 
 import csv
-import random 
-from random import randint
-
+import random
 import smtplib, ssl
+from random import randint
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from PIL import Image, ImageDraw, ImageFont
 
 cartonesCompletos = []
+cartonesBinarios = []
+cartonesAsignados = []
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -120,7 +122,6 @@ def crearBingo():
 
 	return bingo
 
-
 #-----------------------------------------------------------------------------------------------------------#
 '''
 Entradas:Una cantidad de matrices a meter en una lista.
@@ -132,8 +133,11 @@ def generarBingos(cantidad, totalBingos=[]):
 	try:
 		if(cantidad==0):
 			cartonesCompletos = totalBingos
-			# print(cartonesCompletos)
-			return 1
+			if(generarImagenes()==1):			
+				return 1
+			else:
+				cartonesCompletos=[]
+				return -1
 		else:
 			return generarBingos(cantidad-1, totalBingos=totalBingos+[crearBingo()])
 
@@ -323,7 +327,59 @@ def enviarCartones(pCedula):
 
 	return 1
 
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas: Una matriz conteniendo los valores para uno delos cartones generados
+Salidas: Una imagen en formato png que contiene una representación de la matriz recibida dentro de un "cartón" de
+	     bingo.
+Restricciones: No valida restricciones.
+'''
+def generarImagenCarton(cartonBingo): 
+	
+	cartonBase = Image.open('Recursos\PlantillaCarton.png')
+	draw = ImageDraw.Draw(cartonBase)
+	fuenteNumeros = ImageFont.truetype('arial.ttf', size=45)
+	fuenteCodigo = ImageFont.truetype('arial.ttf', size=35)
+	color = 'rgb(0, 0, 0)'
+	
+	x=30
+	y=165
+	potencia=1
+
+	matriz=cartonBingo[:-1]
+
+	#Anotar los numeros de la matriz en la imagen.
+	for i in range(0,len(matriz[0])):
+		for j in range(0,len(matriz)):
+			numero=str(cartonBingo[i][j])
+			draw.text((x, y), numero, fill=color, font=fuenteNumeros)
+			x+=110
+		y=165+(85*potencia)-3
+		potencia+=1
+		x=30
+
+	#Anotar el ID al final de la imagen.	
+	draw.text((215, 585), cartonBingo[5], fill=color, font=fuenteCodigo) 
+
+	cartonBase.save('Cartones\\'+cartonBingo[5]+'.png')
 
 
 
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas: 
+Salidas: 
+Restricciones: 
+'''
+def generarImagenes():
+	global cartonesCompletos
 
+	try:
+		for indice in range(0, len(cartonesCompletos)):
+			generarImagenCarton(cartonesCompletos[indice])
+
+		return 1
+	except Exception as e:
+		print(e)
+		return -1
+	

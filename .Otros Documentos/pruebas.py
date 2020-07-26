@@ -34,53 +34,30 @@ import os
 
 # text_on_img(text="Text to write on img", size=300, bg='red')
 
+from PIL import Image, ImageDraw
 
-import smtplib, ssl
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+# size of image
+canvas = (400, 300)
 
-def enviarCorreo():
-    
-    sender_email = "proyecto3bingo@gmail.com"
-    receiver_email = "josuebrenesa26@gmail.com"
-    password = "cursoTEC2020"
+# scale ration
+scale = 5
+thumb = canvas[0]/scale, canvas[1]/scale
 
-    message = MIMEMultipart("alternative")
-    message["Subject"] = "multipart test"
-    message["From"] = sender_email
-    message["To"] = receiver_email
+# rectangles (width, height, left position, top position)
+frames = [(50, 50, 5, 5), (60, 60, 100, 50), (100, 100, 205, 120)]
 
-    # Create the plain-text and HTML version of your message
-    text = """\
-    Hi,
-    How are you?
-    Real Python has many great tutorials:
-    www.realpython.com"""
-    html = """\
-    <html>
-      <body>
-        <p>Hi,<br>
-           How are you?<br>
-           <a href="http://www.realpython.com">Real Python</a> 
-           has many great tutorials.
-        </p>
-      </body>
-    </html>
-    """
+# init canvas
+im = Image.new('RGBA', canvas, (255, 255, 255, 255))
+draw = ImageDraw.Draw(im)
 
-    # Turn these into plain/html MIMEText objects
-    part1 = MIMEText(text, "plain")
-    part2 = MIMEText(html, "html")
+# draw rectangles
+for frame in frames:
+    x1, y1 = frame[2], frame[3]
+    x2, y2 = frame[2] + frame[0], frame[3] + frame[1]
+    draw.rectangle([x1, y1, x2, y2], outline=(0, 0, 0, 255))
 
-    # Add HTML/plain-text parts to MIMEMultipart message
-    # The email client will try to render the last part first
-    message.attach(part1)
-    message.attach(part2)
+# make thumbnail
+im.thumbnail(thumb)
 
-    # Create secure connection with server and send email
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-        server.login(sender_email, password)
-        server.sendmail(
-            sender_email, receiver_email, message.as_string()
-        )
+# save image
+im.save('im.png')
