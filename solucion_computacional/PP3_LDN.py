@@ -17,6 +17,24 @@ cartonesAsignados = []
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
+Entradas:Una cantidad de matrices a meter en una lista.
+Salidas: Una lista Con matrices de 5x5 con un codigo único al final de la matriz.
+Restricciones: No valida restricciones.
+'''
+def generarAsignados(listaCartones):
+	global cartonesAsignados
+	try:
+		for i in range(0,len(listaCartones)):
+			asignacion=[listaCartones[i][5],0]
+			cartonesAsignados.append(asignacion)
+		return 1	
+	except Exception as e:
+		print(e)
+		return -1
+
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
 Entradas:Un número 
 Salidas: Una lista con el numero de entrada
 Restricciones: No valida restricciones
@@ -130,12 +148,17 @@ Restricciones: No valida restricciones.
 '''
 def generarBingos(cantidad, totalBingos=[]):
 	global cartonesCompletos
+	global cartonesAsignados
+
 	try:
 		if(cantidad==0):
+			generarAsignados(totalBingos)
 			cartonesCompletos = totalBingos
-			if(generarImagenes()==1):			
+			if(generarImagenes()==1):	
+				print(cartonesAsignados)		
 				return 1
 			else:
+				cartonesAsignados=[]
 				cartonesCompletos=[]
 				return -1
 		else:
@@ -298,6 +321,7 @@ def enviarCorreo(correo):
     # The email client will try to render the last part first
     message.attach(parte1)
     message.attach(parte2)
+    
 
     # Create secure connection with server and send email
     try:

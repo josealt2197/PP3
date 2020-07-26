@@ -7,6 +7,7 @@ import PP3_LDN as LDN
 from tkinter import *                   
 from tkinter import ttk 
 from tkinter import messagebox
+from PIL import Image, ImageTk
 
 #-----------------------------------------------------------------------------------------------------------#
 #Lista de Variables Globales
@@ -178,10 +179,10 @@ def inicio():
 
 	ventanaGestorBingos = Tk()
 	ventanaGestorBingos.title("Gestor de Bingos")
-	ventanaGestorBingos.geometry("800x500+250+5")
+	#ventanaGestorBingos.geometry("800x500+250+5")
 	ventanaGestorBingos.iconbitmap("Recursos/icon.ico")
-	ventanaGestorBingos.rowconfigure(0, minsize=800, weight=1)
-	ventanaGestorBingos.columnconfigure(0, minsize=500, weight=1)
+	#ventanaGestorBingos.rowconfigure(0, minsize=800, weight=1)
+	#ventanaGestorBingos.columnconfigure(0, minsize=500, weight=1)
 	ventanaGestorBingos.config(bg="#F8F9FA")
 	ventanaGestorBingos.resizable(False, False) 
 
@@ -237,8 +238,13 @@ def inicio():
 	btnMostrar = Button(subFrConsultar, text="Mostrar", command=comandoMostrarCarton, bg="#2196f3", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
 	btnMostrar.grid(row=1, column=2, padx=5, pady=5)
 
-	frameImagen = Frame(subFrConsultar, width=150, height=150)
+	frameImagen = Frame(subFrConsultar, width=220, height=252)
 	frameImagen.grid(row=2, column=1, padx=5, pady=5)
+
+	img = Image.open('Cartones\\GUM894.png')
+	img = img.resize((220, 252), Image.BICUBIC)
+	tkimage = ImageTk.PhotoImage(img)
+	labelImage = Label(frameImagen, image=tkimage, width=220, height=252).pack()
 
 	subFrConsultar.grid(row=1,column=0, padx=15, sticky="nsew", pady=15)
 
@@ -257,7 +263,7 @@ def inicio():
 
 	opcionJuego_StringVar = StringVar()
 	opcionJuego = OptionMenu(subFrIniciar, opcionJuego_StringVar, *opcionJuego)
-	opcionJuego.config(width=20, bg="#F8F9FA", fg="#e64a19", font=("Calibri", 14,))
+	opcionJuego.config(width=15, bg="#F8F9FA", fg="#e64a19", font=("Calibri", 14,))
 	opcionJuego.grid(row=1,column=1, padx=5, pady=5)
 
 	label3_3 = Label(subFrIniciar, text="Premio: ", bg="#F8F9FA", fg="#e64a19", font=("Calibri", 14))
@@ -380,9 +386,9 @@ def inicio():
 	# ventanaGestorBingos.config(menu=comandoTemporal)
 
 	# #Agregar las pestañas
+	tabControl.add(frGestJugador, text ='Gestionar Jugadores')
 	tabControl.add(frGestBingo, text ='Gestionar Juego') 
 	tabControl.add(frJuego, text ='Juego Nuevo') 
-	tabControl.add(frGestJugador, text ='Gestionar Jugadores') 
 	tabControl.pack(expand = 1, fill ="both") 
 
 	ventanaGestorBingos.mainloop()
