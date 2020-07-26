@@ -139,7 +139,14 @@ def generarBingos(cantidad, totalBingos=[]):
 				cartonesCompletos=[]
 				return -1
 		else:
-			return generarBingos(cantidad-1, totalBingos=totalBingos+[crearBingo()])
+			carton=crearBingo()
+			if(totalBingos!=[]):
+				if(validarCarton(totalBingos,carton)==-1):
+					return generarBingos(cantidad, totalBingos)
+				else:
+					return generarBingos(cantidad-1, totalBingos=totalBingos+[carton])
+			else:
+				return generarBingos(cantidad-1, totalBingos=totalBingos+[carton])
 
 	except Exception as e:
 		print(e)
@@ -392,7 +399,10 @@ Salidas:
 Restricciones: No valida restricciones
 '''
 def validarCarton(listaCartones,carton):
+
+	carton=carton[:-1]	
 	for i in range(0, len(listaCartones)):
-		if (listaCartones[i]==carton):
+		cartonEnLista=listaCartones[i]
+		if (cartonEnLista[:-1]==carton):
 			return -1
 	return 1
