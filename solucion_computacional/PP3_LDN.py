@@ -3,13 +3,13 @@
 #Estudiantes: Jose Manuel Altamirano Salazar - 2020426159
 #             Josué Brenes Alfaro - 2020054427
 
-import csv
-import random
-import smtplib, ssl
-from random import randint
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from PIL import Image, ImageDraw, ImageFont
+#import csv
+#import random
+#import smtplib, ssl
+#from random import randint
+#from email.mime.text import MIMEText
+#from email.mime.multipart import MIMEMultipart
+#from PIL import Image, ImageDraw, ImageFont
 
 cartonesCompletos = []
 cartonesBinarios = []
@@ -382,4 +382,11 @@ def generarImagenes():
 	except Exception as e:
 		print(e)
 		return -1
-	
+
+
+
+def validarCarton(listaCartones,carton):
+	for i in range(0, len(listaCartones)):
+		if (listaCartones[i]==carton):
+			return -1
+	return 1
