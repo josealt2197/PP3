@@ -153,9 +153,11 @@ def generarBingos(cantidad, totalBingos=[]):
 	try:
 		if(cantidad==0):
 			generarAsignados(totalBingos)
+			generarBinario(totalBingos)
 			cartonesCompletos = totalBingos
 			if(generarImagenes()==1):	
-				print(cartonesAsignados)		
+				print(cartonesAsignados)
+				print(cartonesBinarios)		
 				return 1
 			else:
 				cartonesAsignados=[]
@@ -447,6 +449,24 @@ def obtenerImagenCarton(codigo):
 			if (cartonEnLista[0]==codigo):
 				return 1
 
+	except Exception as e:
+		print(e)
+		return -1
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas:Una cantidad de matrices a meter en una lista.
+Salidas: Una lista Con matrices de 5x5 con un codigo único al final de la matriz.
+Restricciones: No valida restricciones.
+'''
+def generarBinario(listaCartones):
+	global cartonesBinarios
+
+	try:
+		for i in range(0,len(listaCartones)):
+			asignacion=[[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],listaCartones[i][5]]
+			cartonesBinarios.append(asignacion)
+		return 1	
 	except Exception as e:
 		print(e)
 		return -1
