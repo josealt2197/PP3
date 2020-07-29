@@ -157,7 +157,7 @@ def generarBingos(cantidad, totalBingos=[]):
 			cartonesCompletos = totalBingos
 			if(generarImagenes()==1):	
 				print(cartonesAsignados)
-				print(cartonesBinarios)		
+				print(cartonesBinarios)	
 				return 1
 			else:
 				cartonesAsignados=[]
@@ -456,7 +456,7 @@ def obtenerImagenCarton(codigo):
 #-----------------------------------------------------------------------------------------------------------#
 '''
 Entradas:Una cantidad de matrices a meter en una lista.
-Salidas: Una lista Con matrices de 5x5 con un codigo único al final de la matriz.
+Salidas: Una lista Con matrices de 5x5 con ceros en su interior.
 Restricciones: No valida restricciones.
 '''
 def generarBinario(listaCartones):
@@ -470,3 +470,136 @@ def generarBinario(listaCartones):
 	except Exception as e:
 		print(e)
 		return -1
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas:Una matriz de 5x5.
+Salidas: Valida si en las cuatro esquijas de la matriz hay un uno retorna 1 si no retorna -1.
+Restricciones: No valida restricciones.
+'''
+def cartonEsquinas(carton):
+
+	if (carton[0][0]==1 and carton[0][4]==1 and carton[4][0]==1 and carton[4][4]==1):
+		return 1
+	else:
+		return -1
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas:Ninguna.
+Salidas: Las matrices de la variable global que tienen un 1 en las cuatro esquinas.
+Restricciones: No valida restricciones.
+'''
+def juegoCuatroesquinas():
+	global cartonesBinarios
+
+	ganadores=[]
+
+	for i in range(0,len(cartonesBinarios)):
+		if (cartonEsquinas(cartonesBinarios[i]) == 1):
+			ganadores=ganadores+[cartonesBinarios[i][5]]
+
+	return ganadores
+
+
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas:Una matriz de 5x5.
+Salidas: Valida si todos los elementos de la matriz son uno retorna 1 si no retorna -1.
+Restricciones: No valida restricciones.
+'''
+def cartonLleno(carton):
+	for x in range(0,len(carton)):
+		for y in range(0,len(carton)):
+			if(carton[x][y]==0):
+				return -1
+	return 1
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas:Ninguna.
+Salidas: Las matrices de la variable global cartonesBinarios que todos los elementos en ella sean 1.
+Restricciones: No valida restricciones.
+'''
+def juegoCartonLleno():
+
+	global cartonesBinarios
+
+	ganadores=[]
+
+	for i in range(0,len(cartonesBinarios)):
+		if (cartonLleno(cartonesBinarios[i]) == 1):
+			ganadores=ganadores+[cartonesBinarios[i][5]]
+
+	return ganadores
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas:Ninguna.
+Salidas: Las matrices de la variable global cartonesBinarios que todos los elementos en ella sean 1.
+Restricciones: No valida restricciones.
+'''
+
+def cartonX(carton):
+
+
+	for i in range(0,len(carton)):
+		for j in range(0,len(carton[0])):
+			if(i==j):
+				if(carton[i][j]==0):
+					return -1
+
+	for i in range(0,len(carton)):
+		contador=0
+		j=len(carton[0])-1
+		while(j>=0):
+			if(i==contador):
+				if(carton[i][j]==0):
+					return -1
+			contador+=1
+			j-=1
+
+	return 1
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas:Ninguna.
+Salidas: Las matrices de la variable global cartonesBinarios que tengan una un uno en los espacios que forman una x en la matriz.
+Restricciones: No valida restricciones.
+'''
+def juegoCartonX():
+
+	global cartonesBinarios
+
+	ganadores=[]
+
+	for i in range(0,len(cartonesBinarios)):
+		if (cartonX(cartonesBinarios[i]) == 1):
+			ganadores=ganadores+[cartonesBinarios[i][5]]
+
+	return ganadores
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas:Ninguna.
+Salidas: Las matrices de la variable global cartonesBinarios que tengan una un uno en los espacios que forman una x en la matriz.
+Restricciones: No valida restricciones.
+'''
+
+def cartonZ(carton):
+
+	for i in range(0,len(carton)):
+		contador=0
+		j=len(carton[0])-1
+		while(j>=0):
+			if(i==contador):
+				if(carton[i][j]==0):
+					return -1
+			contador+=1
+			j-=1
+	for i in range(0,len(carton[0])):
+		if(carton[0][i]==0):
+			return -1
+	for i in range(0,len(carton[4])):
+		if(carton[4][i]==0):
+			return -1
+	return 1
