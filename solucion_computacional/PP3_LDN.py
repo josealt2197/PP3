@@ -14,6 +14,32 @@ from PIL import Image, ImageDraw, ImageFont
 cartonesCompletos = []
 cartonesBinarios = []
 cartonesAsignados = []
+numerosCantados=[]
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas:El numero generado por la función cantarNumero
+Salidas:1 si no se produce ningun error en  revision de los cartones, y caso contrario -1
+Restricciones: No hay
+'''
+def marcarNumeroCantado(numero):
+	global cartonesCompletos
+	global cartonesBinarios
+	cartonPivote=[]
+	cartonPorRevisar=[]
+	try:
+		for carton in range(0,len(cartonesCompletos)):
+			for fila in range(0,len(cartonPorRevisar)-1):
+				for columna in range(0,len(cartonPorRevisar[0])-1):
+					if(cartonPorRevisar[fila][columna]==numero):
+						cartonPivote=cartonesBinarios[carton]
+						cartonPivote[fila][columna]=1
+						cartonesBinarios[carton]=cartonPivote
+		return 1
+	except Exception as e:
+		print("Error al marcar: "+str(e))
+		return -1
+
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -23,6 +49,7 @@ Restricciones: No valida restricciones.
 '''
 def generarAsignados(listaCartones):
 	global cartonesAsignados
+	cartonesAsignados=[]
 	try:
 		for i in range(0,len(listaCartones)):
 			asignacion=[listaCartones[i][5],0]
@@ -52,7 +79,21 @@ Salidas: Un número random entre 0 y 75
 Restricciones:No valida restricciones
 '''
 def cantarNumero():
-	return randint(0,75)
+	global numerosCantados
+	try:
+		numero = randint(0,75)
+		print(numero)
+		if(numero in numerosCantados):
+			cantarNumero()
+		else:
+			numerosCantados.append(numero)
+			if(marcarNumeroCantado(numero)==1):
+				return numerosCantados
+			else:
+				return -1
+	except Exception as e:
+		print("Error al cantar: "+str(e))
+		return - 1 
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -461,7 +502,7 @@ Restricciones: No valida restricciones.
 '''
 def generarBinario(listaCartones):
 	global cartonesBinarios
-
+	cartonesBinarios=[]
 	try:
 		for i in range(0,len(listaCartones)):
 			asignacion=[[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],listaCartones[i][5]]
@@ -543,7 +584,6 @@ Restricciones: No valida restricciones.
 
 def cartonX(carton):
 
-
 	for i in range(0,len(carton)):
 		for j in range(0,len(carton[0])):
 			if(i==j):
@@ -603,3 +643,4 @@ def cartonZ(carton):
 		if(carton[4][i]==0):
 			return -1
 	return 1
+
