@@ -11,6 +11,7 @@ from PIL import Image, ImageTk
 
 #-----------------------------------------------------------------------------------------------------------#
 #Lista de Variables Globales
+ventanaGestorBingos=""
 cantidadCartones=""
 codigoCarton=""
 opcionJuego=""
@@ -25,6 +26,8 @@ cantidadEnviar=""
 cedulaEnviar=""
 frameImagen=""
 subFrConsultar=""
+txtNumCantados=""
+numerosCantados=""
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -96,14 +99,14 @@ def comandoMostrarCarton():
 		valorRetorno = LDN.obtenerImagenCarton(codigo)
 
 		if(valorRetorno != -1):
-			
 			# frameImagen.destroy()
 			# frameImagen = Frame(subFrConsultar, width=220, height=252)
 			# frameImagen.grid(row=2, column=1, padx=5, pady=5)
 			img = Image.open('Cartones\\'+codigo+'.png')
-			img = img.resize((220, 252), Image.BICUBIC)
-			tkimage = ImageTk.PhotoImage(img)
-			labelImage = Label(frameImagen, image=tkimage, width=220, height=252).pack()
+			img.show()
+			# img = img.resize((220, 252), Image.BICUBIC)
+			# tkimage = ImageTk.PhotoImage(img)
+			# labelImage = Label(frameImagen, image=tkimage, width=220, height=252).pack()
 
 		else:
 			messagebox.showerror("Error al Obtener","No se ha poddo obtener un cartón para el código ingresado. ")	
@@ -125,7 +128,16 @@ Salidas:
 Restricciones:
 '''
 def comandoCantarNumero():
-    print("comandoCantarNumero")
+	global numerosCantados
+
+	valorRetorno = LDN.cantarNumero()
+
+	if(valorRetorno != -1):
+		numerosCantados=valorRetorno
+		txtNumCantados.delete(0.0, END)
+		txtNumCantados.insert(END, numerosCantados)
+	else:
+		messagebox.showerror("Error al Guardar","Se ha producido un error al guardar los datos.")
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -149,7 +161,9 @@ def comandoRegistrarJugador():
 
 		if(valorRetorno != -1):
 			messagebox.showinfo("Jugador Agregado","Los datos del jugador se han guardado con exito.")
-			cantidadCartones.delete(0,END)					
+			nombreJugador.delete(0,END)
+			cedulaJugador.delete(0,END)
+			correoJugador.delete(0,END)					
 		else:
 			messagebox.showerror("Error al Guardar","Se ha producido un error al guardar los datos.")	  
 
@@ -165,6 +179,7 @@ def comandoEnviarCartones():
 	global cedulaEnviar
 
 	cantidad=0
+	cartonesPorAsignar=[]
 
 	if(cantidadEnviar.get() =="" or cedulaEnviar.get()==""):
 		messagebox.showwarning("Texto Vacío","Deben completarse todos los espacios.")
@@ -173,11 +188,18 @@ def comandoEnviarCartones():
 		cedula=cedulaEnviar.get()
 		cantidad=int(cantidadEnviar.get())
 
-		if(LDN.validarCedula(cedula)==1):
-			if(LDN.enviarCartones(cedula)==1):
-				messagebox.showinfo("Cartones Enviados","Los cartones ha sido enviados al jugador.")	
-		else:
-			messagebox.showerror("Error en Cédula","El valor ingresado para la cédula, no corresponde a ningún jugador.")	 
+		cartonesPorAsignar=LDN.asignarCartones(cantidad, cedula)
+		
+		if(cartonesPorAsignar==[-1]):
+			messagebox.showerror("Error en Cartones","Se ha producido un error al asignar los cartones.")
+		elif(cartonesPorAsignar==[-2]):
+			messagebox.showerror("Error en Cartones","No se tienen cartones suficientes diponibles para asignar.")
+		else:			
+			if(LDN.validarCedula(cedula)==1):
+				if(LDN.enviarCartones(cedula, cartonesPorAsignar)==1):
+					messagebox.showinfo("Cartones Enviados","Los cartones ha sido enviados al jugador.")	
+			else:
+				messagebox.showerror("Error en Cédula","El valor ingresado para la cédula, no corresponde a ningún jugador.")	 
 
 
 #-----------------------------------------------------------------------------------------------------------#
@@ -201,6 +223,9 @@ def inicio():
 	global cantidadEnviar
 	global cedulaEnviar
 	global frameImagen
+	global txtNumCantados
+	global ventanaGestorBingos
+	global subFrConsultar
 
 	ventanaGestorBingos = Tk()
 	ventanaGestorBingos.title("Gestor de Bingos")
@@ -266,10 +291,10 @@ def inicio():
 	frameImagen = Frame(subFrConsultar, width=220, height=252)
 	frameImagen.grid(row=2, column=1, padx=5, pady=5)
 
-	img = Image.open('Cartones\AJZ126.png')
-	img = img.resize((220, 252), Image.BICUBIC)
-	tkimage = ImageTk.PhotoImage(img)
-	labelImage = Label(frameImagen, image=tkimage, width=220, height=252).pack()
+	# img = Image.open('Cartones\AJZ126.png')
+	# img = img.resize((220, 252), Image.BICUBIC)
+	# tkimage = ImageTk.PhotoImage(img)
+	# labelImage = Label(frameImagen, width=220, height=252).pack()
 
 	subFrConsultar.grid(row=1,column=0, padx=15, sticky="nsew", pady=15)
 
