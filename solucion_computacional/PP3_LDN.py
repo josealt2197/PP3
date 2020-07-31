@@ -4,6 +4,7 @@
 #             Josué Brenes Alfaro - 2020054427
 
 import os
+import sys
 import csv
 import random
 import smtplib, ssl
@@ -93,14 +94,17 @@ Restricciones:No valida restricciones
 '''
 def cantarNumero():
 	global numerosCantados
+	sys.setrecursionlimit(10000)
 	try:
-		numero = randint(0,75)
+		if(len(numerosCantados)>=75):
+			return -2
+		numero = randint(1,75)
 		if(numero in numerosCantados):
-			cantarNumero()
+			return cantarNumero()
 		else:
 			numerosCantados.append(numero)
 			if(marcarNumeroCantado(numero)==1):
-				return numerosCantados
+				return numero 				
 			else:
 				return -1
 	except Exception as e:
@@ -349,6 +353,51 @@ def obtenerImagenCarton(codigo):
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
+Entradas: Ninguna
+Salidas: 
+Restricciones: 
+'''
+def contarCartones():
+	global cartonesAsignados
+	global cartonesCompletos
+
+	if(cartonesCompletos==[]):
+		return 0
+	else:
+		return len(cartonesCompletos)
+	
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas: Ninguna
+Salidas: 
+Restricciones: 
+'''
+def obtenerValoresJuego():
+	global cartonesAsignados
+	global cartonesCompletos
+
+	cartonEnLista=[]
+	datosPorRetornar=[]
+	jugadores=0
+
+	try:
+		for i in range(0, len(cartonesAsignados)):
+			cartonEnLista=cartonesAsignados[i]
+			if (cartonEnLista[1]!=0):
+				jugadores+=1
+
+		datosPorRetornar.append(jugadores)
+		datosPorRetornar.append(contarCartones())
+
+		return datosPorRetornar
+
+	except Exception as e:
+		print(e)
+		return [-1]
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
 Entradas:Una matriz de 5x5.
 Salidas: Valida si en las cuatro esquijas de la matriz hay un uno retorna 1 si no retorna -1.
 Restricciones: No valida restricciones.
@@ -366,7 +415,7 @@ Entradas:Ninguna.
 Salidas: Las matrices de la variable global que tienen un 1 en las cuatro esquinas.
 Restricciones: No valida restricciones.
 '''
-def juegoCuatroesquinas():
+def juegoCuatroEsquinas():
 	global cartonesBinarios
 
 	ganadores=[]
@@ -414,7 +463,6 @@ Entradas:Ninguna.
 Salidas: Las matrices de la variable global cartonesBinarios que todos los elementos en ella sean 1.
 Restricciones: No valida restricciones.
 '''
-
 def cartonX(carton):
 
 	for i in range(0,len(carton)):
@@ -434,6 +482,7 @@ def cartonX(carton):
 			j-=1
 
 	return 1
+
 #-----------------------------------------------------------------------------------------------------------#
 '''
 Entradas:Ninguna.
@@ -451,13 +500,13 @@ def juegoCartonX():
 			ganadores=ganadores+[cartonesBinarios[i][5]]
 
 	return ganadores
+
 #-----------------------------------------------------------------------------------------------------------#
 '''
 Entradas:Ninguna.
 Salidas: Las matrices de la variable global cartonesBinarios que tengan una un uno en los espacios que forman una x en la matriz.
 Restricciones: No valida restricciones.
 '''
-
 def cartonZ(carton):
 
 	for i in range(0,len(carton)):
@@ -477,6 +526,42 @@ def cartonZ(carton):
 			return -1
 	return 1
 
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas:Ninguna.
+Salidas: Las matrices de la variable global cartonesBinarios que tengan una un uno en los espacios que forman una Z en la matriz.
+Restricciones: No valida restricciones.
+'''
+def juegoCartonZ():
+
+	global cartonesBinarios
+
+	ganadores=[]
+
+	for i in range(0,len(cartonesBinarios)):
+		if (cartonZ(cartonesBinarios[i]) == 1):
+			ganadores=ganadores+[cartonesBinarios[i][5]]
+
+	return ganadores
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas:
+Salidas:
+Restricciones: 
+'''
+def validarTipoJuego(tipo):
+
+	if (tipo=="Jugar en X"):
+		return juegoCartonX()
+	elif (tipo=="Cuatro esquinas"):
+		return juegoCuatroEsquinas()
+	elif (tipo=="Cartón lleno"):
+		return juegoCartonLleno()
+	elif (tipo=="Jugar en Z"):
+		return juegoCartonZ()
+	else:
+		return [-1]
 
 #///////////////////////////////////////////////////////////////////////////////////////////////////////////#
 # Funciones para Envío de Correos
@@ -607,6 +692,7 @@ def enviarCartones(pCedula, cartonesPorAsignar):
 				return -1
 
 	return 1
+
 #-----------------------------------------------------------------------------------------------------------#
 '''
 Entradas:
@@ -632,7 +718,6 @@ def asignarCartones(cantidad, cedula):
 		print(e)
 		return [-1]
 
-
 #-----------------------------------------------------------------------------------------------------------#
 '''
 Entradas:
@@ -648,8 +733,6 @@ def validarDisponibles():
 		if(cartonesAsignados[i][1]==0):
 			cantidad+=1				
 	return cantidad	
-
-
 
 #///////////////////////////////////////////////////////////////////////////////////////////////////////////#
 # Funciones para Admin. de CSV
@@ -742,7 +825,6 @@ def obtenerCedulas():
 		listaCedulas.append(jugador[1]) 
 
 	return listaCedulas
-
 
 #-----------------------------------------------------------------------------------------------------------#
 '''

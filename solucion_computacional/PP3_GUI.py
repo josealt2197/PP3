@@ -14,7 +14,7 @@ from PIL import Image, ImageTk
 ventanaGestorBingos=""
 cantidadCartones=""
 codigoCarton=""
-opcionJuego=""
+opcionJuego_StringVar=""
 premio=""
 labelTipo=""
 premioJuego=""
@@ -28,6 +28,9 @@ frameImagen=""
 subFrConsultar=""
 txtNumCantados=""
 numerosCantados=""
+labelTotCartones=""
+labelTotJugadores=""
+tipoJuegoSeleccionado=""
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -92,25 +95,27 @@ def comandoMostrarCarton():
 	global subFrConsultar
 
 	codigo=codigoCarton.get()
-
-	if(codigo==""):
-		messagebox.showwarning("Texto Vacío","Deben ingresar un código para el identificador.")	
-	else:
-		valorRetorno = LDN.obtenerImagenCarton(codigo)
-
-		if(valorRetorno != -1):
-			# frameImagen.destroy()
-			# frameImagen = Frame(subFrConsultar, width=220, height=252)
-			# frameImagen.grid(row=2, column=1, padx=5, pady=5)
-			img = Image.open('Cartones\\'+codigo+'.png')
-			img.show()
-			# img = img.resize((220, 252), Image.BICUBIC)
-			# tkimage = ImageTk.PhotoImage(img)
-			# labelImage = Label(frameImagen, image=tkimage, width=220, height=252).pack()
-
+	if(LDN.contarCartones()!=0):
+		if(codigo==""):
+			messagebox.showwarning("Texto Vacío","Deben ingresar un código para el identificador.")	
 		else:
-			messagebox.showerror("Error al Obtener","No se ha poddo obtener un cartón para el código ingresado. ")	
+			
+				valorRetorno = LDN.obtenerImagenCarton(codigo)
 
+				if(valorRetorno != -1):
+					# frameImagen.destroy()
+					# frameImagen = Frame(subFrConsultar, width=220, height=252)
+					# frameImagen.grid(row=2, column=1, padx=5, pady=5)
+					img = Image.open('Cartones\\'+codigo+'.png')
+					img.show()
+					# img = img.resize((220, 252), Image.BICUBIC)
+					# tkimage = ImageTk.PhotoImage(img)
+					# labelImage = Label(frameImagen, image=tkimage, width=220, height=252).pack()
+
+				else:
+					messagebox.showerror("Error al Obtener","No se ha podido obtener un cartón para el código ingresado. ")	
+	else:
+		messagebox.showerror("Error de Bingo","No se han generado los cartones del bingo. ")
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -119,7 +124,36 @@ Salidas:
 Restricciones:
 '''
 def comandoIniciarJuego():
-    print("comandoIniciarJuego")
+	global opcionJuego_StringVar
+	global premio
+	global labelTipo
+	global premioJuego
+	global labelTotCartones
+	global labelTotJugadores
+	global tipoJuegoSeleccionado
+
+	valoresJuego=[]
+
+	if(LDN.contarCartones()==0):
+		messagebox.showerror("Error de Bingo","No se han generado los cartones del bingo. ")	
+	else:
+		if(opcionJuego_StringVar.get() =="" or premio.get()==""):
+			messagebox.showwarning("Texto Vacío","Deben completarse todos los espacios.")
+		else:	
+			valoresJuego = LDN.obtenerValoresJuego()
+
+			if(valoresJuego!=[-1]):
+				if(valoresJuego[1]==0):
+					messagebox.showerror("Error de Juego","No se han generado los cartones del bingo. ")
+				elif(valoresJuego[0]==0):
+					messagebox.showwarning("Error de Juego","No se ha asignado ningún cartón. ")
+				else:
+					tipoJuegoSeleccionado=opcionJuego_StringVar.get()
+					labelTipo.configure(text="Tipo de juego: "+opcionJuego_StringVar.get()) 
+					premioJuego.insert(0, premio.get())
+					labelTotCartones.configure(text="Total de Cartones: "+str(valoresJuego[1]))
+					labelTotJugadores.configure(text="Total de Jugadores: "+str(valoresJuego[0]))
+
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -129,15 +163,31 @@ Restricciones:
 '''
 def comandoCantarNumero():
 	global numerosCantados
+	global tipoJuegoSeleccionado
 
-	valorRetorno = LDN.cantarNumero()
+	print("Tipo"+tipoJuegoSeleccionado)
 
-	if(valorRetorno != -1):
-		numerosCantados=valorRetorno
+	ganadores=[]
+	numeroCantado = LDN.cantarNumero()
+
+	if(numeroCantado == -2):
+		messagebox.showwarning("Error al Cantar","Se han cantado todos los números posibles.")
+	elif(numeroCantado != -1):
+		numerosCantados = numerosCantados + " " +str(numeroCantado)
 		txtNumCantados.delete(0.0, END)
 		txtNumCantados.insert(END, numerosCantados)
+
+		ganadores = LDN.validarTipoJuego(tipoJuegoSeleccionado)
+		if(ganadores==[-1]):
+			messagebox.showerror("Error al Validar","Se ha producido un error al validar el número cantado.")
+		elif(ganadores!=[]):
+			identificadores=""
+			for x in range(0,len(ganadores)):
+				identificadores=identificadores+str(ganadores[x])
+			messagebox.showinfo("Cartones Ganadores","¡Felicidades! "+identificadores)
+
 	else:
-		messagebox.showerror("Error al Guardar","Se ha producido un error al guardar los datos.")
+		messagebox.showerror("Error al Cantar","Se ha producido un error al cantar el número.")
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -157,15 +207,18 @@ def comandoRegistrarJugador():
 	if(nombre=="" or cedula=="" or correo==""):
 		messagebox.showwarning("Texto Vacío","Deben completarse todos los espacios.")	
 	else:
-		valorRetorno = LDN.agregarJugadorCSV(nombre, cedula, correo)
+		if(LDN.validarCedula(cedula)==1):
+			messagebox.showerror("Error en Cédula","El valor ingresado para la cédula, ya ha sido registrado.")	 
+		else:			
+			valorRetorno = LDN.agregarJugadorCSV(nombre, cedula, correo)
 
-		if(valorRetorno != -1):
-			messagebox.showinfo("Jugador Agregado","Los datos del jugador se han guardado con exito.")
-			nombreJugador.delete(0,END)
-			cedulaJugador.delete(0,END)
-			correoJugador.delete(0,END)					
-		else:
-			messagebox.showerror("Error al Guardar","Se ha producido un error al guardar los datos.")	  
+			if(valorRetorno != -1):
+				messagebox.showinfo("Jugador Agregado","Los datos del jugador se han guardado con exito.")
+				nombreJugador.delete(0,END)
+				cedulaJugador.delete(0,END)
+				correoJugador.delete(0,END)					
+			else:
+				messagebox.showerror("Error al Guardar","Se ha producido un error al guardar los datos.")	  
 
 
 #-----------------------------------------------------------------------------------------------------------#
@@ -181,25 +234,30 @@ def comandoEnviarCartones():
 	cantidad=0
 	cartonesPorAsignar=[]
 
-	if(cantidadEnviar.get() =="" or cedulaEnviar.get()==""):
-		messagebox.showwarning("Texto Vacío","Deben completarse todos los espacios.")
-		
-	elif(esNumero(cantidadEnviar.get())==True):
-		cedula=cedulaEnviar.get()
-		cantidad=int(cantidadEnviar.get())
+	if(LDN.contarCartones()==0):
+		messagebox.showerror("Error de Bingo","No se han generado los cartones del bingo. ")	
+	else:
+		if(cantidadEnviar.get() =="" or cedulaEnviar.get()==""):
+			messagebox.showwarning("Texto Vacío","Deben completarse todos los espacios.")
+			
+		elif(esNumero(cantidadEnviar.get())==True):
+				cedula=cedulaEnviar.get()
+				cantidad=int(cantidadEnviar.get())
 
-		cartonesPorAsignar=LDN.asignarCartones(cantidad, cedula)
-		
-		if(cartonesPorAsignar==[-1]):
-			messagebox.showerror("Error en Cartones","Se ha producido un error al asignar los cartones.")
-		elif(cartonesPorAsignar==[-2]):
-			messagebox.showerror("Error en Cartones","No se tienen cartones suficientes diponibles para asignar.")
-		else:			
-			if(LDN.validarCedula(cedula)==1):
-				if(LDN.enviarCartones(cedula, cartonesPorAsignar)==1):
-					messagebox.showinfo("Cartones Enviados","Los cartones ha sido enviados al jugador.")	
-			else:
-				messagebox.showerror("Error en Cédula","El valor ingresado para la cédula, no corresponde a ningún jugador.")	 
+				cartonesPorAsignar=LDN.asignarCartones(cantidad, cedula)
+				
+				if(cartonesPorAsignar==[-1]):
+					messagebox.showerror("Error en Cartones","Se ha producido un error al asignar los cartones.")
+				elif(cartonesPorAsignar==[-2]):
+					messagebox.showerror("Error en Cartones","No se tienen cartones suficientes diponibles para asignar.")
+				else:			
+					if(LDN.validarCedula(cedula)==1):
+						if(LDN.enviarCartones(cedula, cartonesPorAsignar)==1):
+							messagebox.showinfo("Cartones Enviados","Los cartones ha sido enviados al jugador.")
+							cantidadEnviar.delete(0,END) 
+							cedulaEnviar.delete(0,END)	
+					else:
+						messagebox.showerror("Error en Cédula","El valor ingresado para la cédula, no corresponde a ningún jugador.")	 
 
 
 #-----------------------------------------------------------------------------------------------------------#
@@ -212,7 +270,7 @@ def inicio():
 
 	global cantidadCartones
 	global codigoCarton
-	global opcionJuego
+	global opcionJuego_StringVar
 	global premio
 	global labelTipo
 	global premioJuego
@@ -226,6 +284,8 @@ def inicio():
 	global txtNumCantados
 	global ventanaGestorBingos
 	global subFrConsultar
+	global labelTotCartones
+	global labelTotJugadores
 
 	ventanaGestorBingos = Tk()
 	ventanaGestorBingos.title("Gestor de Bingos")
@@ -309,12 +369,13 @@ def inicio():
 	label3_2 = Label(subFrIniciar, text="Configuración: ", bg="#F8F9FA", fg="#e64a19", font=("Calibri", 14))
 	label3_2.grid(row=1,column=0, sticky="e", padx=5, pady=5)
 
-	opcionJuego = [ "Jugar en X", "Cuatro esquinas", "Cartón lleno", "Jugar en Z" ] 
+	opciones = ( "Jugar en X", "Cuatro esquinas", "Cartón lleno", "Jugar en Z" ) 
 
 	opcionJuego_StringVar = StringVar()
-	opcionJuego = OptionMenu(subFrIniciar, opcionJuego_StringVar, *opcionJuego)
+	opcionJuego = OptionMenu(subFrIniciar, opcionJuego_StringVar, *opciones)
 	opcionJuego.config(width=15, bg="#F8F9FA", fg="#e64a19", font=("Calibri", 14,))
 	opcionJuego.grid(row=1,column=1, padx=5, pady=5)
+	opcionJuego_StringVar.set("Jugar en X")
 
 	label3_3 = Label(subFrIniciar, text="Premio: ", bg="#F8F9FA", fg="#e64a19", font=("Calibri", 14))
 	label3_3.grid(row=1,column=2, sticky="e", padx=5, pady=5)
@@ -333,7 +394,7 @@ def inicio():
 	subFrJugar.rowconfigure((0,1,2,3), weight=1)
 	subFrJugar.columnconfigure((0,1,2,3), weight=1)
 
-	labelTipo = Label(subFrJugar, text="Tipo de juego: Cuatro Esquinas", bg="#F8F9FA", fg="#e64a19", font=("Calibri", 14))
+	labelTipo = Label(subFrJugar, text="Tipo de juego: ", bg="#F8F9FA", fg="#e64a19", font=("Calibri", 14))
 	labelTipo.grid(row=0,column=0, sticky="w", padx=5)
 
 	label4_2 = Label(subFrJugar, text="Premio: ", bg="#F8F9FA", fg="#e64a19", font=("Calibri", 14))
@@ -359,11 +420,11 @@ def inicio():
 
 	frameTexto.grid(row=2, column=0, columnspan = 5, padx=10, pady=10)
 
-	label4_3 = Label(subFrJugar, text="Total de Cartones: 500", bg="#F8F9FA", fg="#e64a19", font=("Calibri", 11))
-	label4_3.grid(row=3,column=0, sticky="w", padx=5, pady=5)
+	labelTotCartones = Label(subFrJugar, text="Total de Cartones: ", bg="#F8F9FA", fg="#e64a19", font=("Calibri", 11))
+	labelTotCartones.grid(row=3,column=0, sticky="w", padx=5, pady=5)
 
-	label4_4 = Label(subFrJugar, text="Total de Jugadores: 41", bg="#F8F9FA", fg="#e64a19", font=("Calibri", 11))
-	label4_4.grid(row=3,column=3, sticky="e", padx=5, pady=5)
+	labelTotJugadores = Label(subFrJugar, text="Total de Jugadores: ", bg="#F8F9FA", fg="#e64a19", font=("Calibri", 11))
+	labelTotJugadores.grid(row=3,column=3, sticky="e", padx=5, pady=5)
 
 	subFrJugar.grid(row=1,column=0, padx=15, pady=15, sticky="nsew")
 
