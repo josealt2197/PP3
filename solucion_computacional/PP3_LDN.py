@@ -434,7 +434,7 @@ Restricciones: No valida restricciones.
 '''
 def cartonLleno(carton):
 	for x in range(0,len(carton)):
-		for y in range(0,len(carton)):
+		for y in range(0,len(carton[0])):
 			if(carton[x][y]==0):
 				return -1
 	return 1
@@ -733,6 +733,30 @@ def validarDisponibles():
 		if(cartonesAsignados[i][1]==0):
 			cantidad+=1				
 	return cantidad	
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas:
+Salidas:
+Restricciones: 
+'''
+def validarCorreo(correo):
+    contador=0
+    longitud=len(correo)
+    punto=correo.find(".")
+    arroba=correo.find("@")
+
+    if(punto==-1 or arroba==-1):
+    	return False
+
+    for i in range (0,arroba):
+        if((correo[i]>='a' and correo[i]<='z') or (correo[i]>='A' and correo[i]<='Z')):
+            contador=contador+1
+    
+    if(contador>0 and arroba>0 and (punto-arroba)>0 and (punto+1)<longitud):
+        return True
+    else:
+        return False
 
 #///////////////////////////////////////////////////////////////////////////////////////////////////////////#
 # Funciones para Admin. de CSV

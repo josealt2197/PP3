@@ -164,8 +164,10 @@ Restricciones:
 def comandoCantarNumero():
 	global numerosCantados
 	global tipoJuegoSeleccionado
-
-	print("Tipo"+tipoJuegoSeleccionado)
+	global labelTipo
+	global premioJuego
+	global labelTotCartones
+	global labelTotJugadores
 
 	ganadores=[]
 	numeroCantado = LDN.cantarNumero()
@@ -184,7 +186,14 @@ def comandoCantarNumero():
 			identificadores=""
 			for x in range(0,len(ganadores)):
 				identificadores=identificadores+str(ganadores[x])
-			messagebox.showinfo("Cartones Ganadores","¡Felicidades! "+identificadores)
+			messagebox.showinfo("Cartones Ganadores","¡Felicidades! Ha resultado ganador el cartón(es): "+identificadores)
+			resultado=messagebox.askquestion('Terminar Juego','¿Desea terminar el juego en curso?')
+			if (resultado=='yes'):
+				txtNumCantados.delete(0.0, END)
+				labelTipo.configure(text="Tipo de juego:") 
+				premioJuego.delete(0, END)
+				labelTotCartones.configure(text="Total de Cartones: ")
+				labelTotJugadores.configure(text="Total de Jugadores: ")
 
 	else:
 		messagebox.showerror("Error al Cantar","Se ha producido un error al cantar el número.")
