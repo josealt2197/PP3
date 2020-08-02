@@ -27,8 +27,27 @@ jugadores=0
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:Una cantidad de matrices a meter en una lista.
-Salidas: Una lista Con matrices de 5x5 con ceros en su interior.
+Entradas: Una lista de matrices (cartones) requerida para generar otra lista.
+Salidas: Una lista con sublistas de 2 campos, el primero con el codigo único al final de la matriz (identifi-
+		 cador de cada cartón) y el otro campo con un 0. 
+Restricciones: No valida restricciones.
+'''
+def generarAsignados(listaCartones):
+	global cartonesAsignados
+	cartonesAsignados=[]
+	try:
+		for i in range(0,len(listaCartones)):
+			asignacion=[listaCartones[i][5],0]
+			cartonesAsignados.append(asignacion)
+		return 1	
+	except Exception as e:
+		print(e)
+		return -1
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas: Una lista de matrices (cartones) requerida para generar otra lista.
+Salidas: Una lista con matrices de 5x5 con ceros como los valores de todos sus campos.
 Restricciones: No valida restricciones.
 '''
 def generarBinario(listaCartones):
@@ -45,9 +64,9 @@ def generarBinario(listaCartones):
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:El numero generado por la función cantarNumero
-Salidas:1 si no se produce ningun error en  revision de los cartones, y caso contrario -1
-Restricciones: No hay
+Entradas: Un numero entero entre 1 y 75 generado por la función cantarNumero.
+Salidas: 1 si no se produce ningun error en revision de los cartones, caso contrario -1.
+Restricciones: No valida restricciones.
 '''
 def marcarNumeroCantado(numero):
 	global cartonesCompletos
@@ -68,30 +87,11 @@ def marcarNumeroCantado(numero):
 		print(e)
 		return -1
 
-
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:Una cantidad de matrices a meter en una lista.
-Salidas: Una lista Con matrices de 5x5 con un codigo único al final de la matriz.
+Entradas: Ninguna.
+Salidas: Un número aleatorio entre 0 y 75.
 Restricciones: No valida restricciones.
-'''
-def generarAsignados(listaCartones):
-	global cartonesAsignados
-	cartonesAsignados=[]
-	try:
-		for i in range(0,len(listaCartones)):
-			asignacion=[listaCartones[i][5],0]
-			cartonesAsignados.append(asignacion)
-		return 1	
-	except Exception as e:
-		print(e)
-		return -1
-
-#-----------------------------------------------------------------------------------------------------------#
-'''
-Entradas:Ninguna
-Salidas: Un número random entre 0 y 75
-Restricciones:No valida restricciones
 '''
 def cantarNumero():
 	global numerosCantados
@@ -114,9 +114,10 @@ def cantarNumero():
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas: Ninguna
-Salidas: Eliminar los valores de las listas
-Restricciones:No valida restricciones
+Entradas: Ninguna.
+Salidas: Eliminar los valores de las variables globales, e invocar a la función para eliminar las imágenes de 
+		 los cartones generados. 
+Restricciones: No valida restricciones.
 '''
 def eliminarCartones():
 	global cartonesCompletos 
@@ -134,12 +135,13 @@ def eliminarCartones():
 	except Exception as e:
 		return -1
 
+
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas: Un número de inicio y otro de fin para sacar números random entre ese intervalo.
-Salidas: Una lista de 5 espacios con números diferentes en cada espacio, entre los intervalos 
-         de entrada.
-Restricciones:No valida restricciones
+Entradas: Un número entero para inicio y otro para fin, para obtener números aleatorios dentro de ese intervalo.
+Salidas: Una lista de 5 espacios con números diferentes en cada espacio, dentro del intervalo genrado por las
+		 entradas.
+Restricciones: No valida restricciones
 '''
 def crearFila(inicio,fin):
 
@@ -155,8 +157,7 @@ def crearFila(inicio,fin):
 #-----------------------------------------------------------------------------------------------------------#
 '''
  Entradas: Una matriz cuadrada 
- Salidas: La matriz ingresada cambiando sus filas por columnas 
-          (o viceversa)   
+ Salidas: La matriz ingresada cambiando sus filas por columnas (o viceversa)   
  Restricciones: Ninguna
 '''
 def trasponerMatriz(matriz):
@@ -172,10 +173,9 @@ def trasponerMatriz(matriz):
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas: Ninguna
-Salidas: Genera codigos random de 6 caracteres, los primeros 3 son letras
-         y los ultimos 3 son numeros 
-Restricciones: No valida restricciones
+Entradas: Ninguna.
+Salidas: Un código aleatorio de 6 caracteres, los 3 primeros letras y los ultimos 3 son números entre 0 y 9 
+Restricciones: No valida restricciones.
 '''
 def generarIDCarton():
 	idLetras=""
@@ -188,14 +188,13 @@ def generarIDCarton():
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:Ninguna.
-Salidas: Una lista con matricez cuadradas de 5x5 en las cuales
-         la primer columna tiene numeros ramdom entre 1 y 15, 
-         la sengunda del 16 al 30, la tercera del 31 al 45, la 
-         cuarta 46 al 60, la quinta del 61 al 75 y al final de la matirz un codigo único.  
+Entradas: Ninguna.
+Salidas: Una matriz cuadrada de 5x5 en la cual las columnas contienen numeros aleatorios y únicos entre sí, 
+		 dentro de los intervalos: 1 - 15,  16 - 30, 31 - 45, 46 - 60 y  61 - 75 y al final de la matirz un 
+		 alfanumérico codigo único.  
 Restricciones: No posee restricciones.
 '''
-def crearBingo():
+def crearCarton():
 
 	bingo=[[],[],[],[],[]]
 	inicio=1
@@ -212,11 +211,10 @@ def crearBingo():
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas: Una lista grande de listas y una lista sola
-Salidas: 
-         1 en el caso de que la lista pequeña no se encuentre en la lista grande 
-         -1 en el caso de que la lista pequeña se encuentre en la lista grande
-Restricciones: No valida restricciones
+Entradas: Una lista de matrices (cartones) y una matriz individual.
+Salidas: 1 en el caso de que la matriz individual no se encuentre repetida en la lista de matrices, y -1 si se
+		 hallara una matriz que coincida con la recibida.
+Restricciones: No valida restricciones.
 '''
 def validarCarton(listaCartones,carton):
 
@@ -229,8 +227,8 @@ def validarCarton(listaCartones,carton):
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:Una cantidad de matrices a meter en una lista.
-Salidas: Una lista Con matrices de 5x5 con un codigo único al final de la matriz.
+Entradas: Una valor entero que indica la cantidad de matrices (cartones) por ingresar en una lista.
+Salidas: Una lista con matrices de 5x5 con un codigo único al final de la matriz.
 Restricciones: No valida restricciones.
 '''
 def generarBingos(cantidad, totalBingos=[]):
@@ -249,7 +247,7 @@ def generarBingos(cantidad, totalBingos=[]):
 				cartonesCompletos=[]
 				return -1
 		else:
-			carton=crearBingo()
+			carton=crearCarton()
 			if(totalBingos!=[]):
 				if(validarCarton(totalBingos,carton)==-1):
 					return generarBingos(cantidad, totalBingos)
@@ -269,9 +267,10 @@ def generarBingos(cantidad, totalBingos=[]):
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:Ninguna
-Salidas:1 si no se produce ningun error en el borrado de las imágenes de los cartones, y caso contrario -1
-Restricciones: No hay
+Entradas: Ninguna.
+Salidas: 1 si no se produce ningun error en el borrado de las imágenes de los cartones dentro de la carpeta 
+		 indicada, caso contrario -1.
+Restricciones: No valida restricciones.
 '''
 def eliminarPNGCartones():
 	for imagen in os.listdir('Cartones'): 
@@ -280,9 +279,8 @@ def eliminarPNGCartones():
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas: Una matriz conteniendo los valores para uno delos cartones generados
-Salidas: Una imagen en formato png que contiene una representación de la matriz recibida dentro de un "cartón" de
-	     bingo.
+Entradas: Una matriz que contiene los valores para uno de los cartones generados.
+Salidas: Una imagen en formato png que representa la matriz recibida dentro de un "cartón" de bingo.
 Restricciones: No valida restricciones.
 '''
 def generarImagenCarton(cartonBingo): 
@@ -290,7 +288,7 @@ def generarImagenCarton(cartonBingo):
 	cartonBase = Image.open('Recursos\PlantillaCarton.png')
 	draw = ImageDraw.Draw(cartonBase)
 	fuenteNumeros = ImageFont.truetype('arial.ttf', size=45)
-	fuenteCodigo = ImageFont.truetype('arial.ttf', size=35)
+	fuenteCodigo = ImageFont.truetype('arial.ttf', size=25)
 	color = 'rgb(0, 0, 0)'
 	
 	x=30
@@ -310,15 +308,15 @@ def generarImagenCarton(cartonBingo):
 		x=30
 
 	#Anotar el ID al final de la imagen.	
-	draw.text((215, 585), cartonBingo[5], fill=color, font=fuenteCodigo) 
+	draw.text((145, 585), "Identificador: "+cartonBingo[5], fill=color, font=fuenteCodigo) 
 
 	cartonBase.save('Cartones\\'+cartonBingo[5]+'.png')
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas: Ninguna
-Salidas: creacion de las imagenes en formato png para los "cartones" del bingo.
-Restricciones: Ninguna
+Entradas: Ninguna.
+Salidas: Invoca la función que crea las imagenes de los cartones, según la cantidad de cartones generados
+Restricciones: No valida restricciones.
 '''
 def generarImagenes():
 	global cartonesCompletos
@@ -334,9 +332,10 @@ def generarImagenes():
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas: Ninguna
-Salidas: 
-Restricciones: 
+Entradas: Una cadena de caracteres que corresponde al identificador de uno de los cartones generados.
+Salidas: 1 si la cadena recibida corresponde al código de uno de los cartones generados o -1 si el valor 
+		 recibido no se encuentra dentro de los cartones generados.
+Restricciones: No valida restricciones. 
 '''
 def obtenerImagenCarton(codigo):
 	global cartonesAsignados
@@ -357,9 +356,9 @@ def obtenerImagenCarton(codigo):
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas: Ninguna
-Salidas: 
-Restricciones: 
+Entradas: Ninguna.
+Salidas: La cantidad de elementos o cartones que se encuentran dentro de a lista de cartones generados.
+Restricciones: No valida restricciones. 
 '''
 def contarCartones():
 	global cartonesAsignados
@@ -374,7 +373,9 @@ def contarCartones():
 #-----------------------------------------------------------------------------------------------------------#
 '''
 Entradas: Ninguna
-Salidas: 
+Salidas: Una lista de 3 campos: en el primero se incluya la cantidad de jugadores a los que les fue enviado al
+		 menos un cartón, en el segundo la catidad de cartones generados y en el tercer campo un 1 si ya han sido 
+		 asignados todos los cartones a un jugador y -1 en caso de no todos hayan sido asignados. 
 Restricciones: 
 '''
 def obtenerValoresJuego():
@@ -410,8 +411,8 @@ def obtenerValoresJuego():
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:Una matriz de 5x5.
-Salidas: Valida si en las cuatro esquijas de la matriz hay un uno retorna 1 si no retorna -1.
+Entradas: Una matriz de 5x5.
+Salidas: 1 si en las cuatro esquinas de la matriz hay un valor de "1", sino retorna -1.
 Restricciones: No valida restricciones.
 '''
 def cartonEsquinas(carton):
@@ -423,8 +424,8 @@ def cartonEsquinas(carton):
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:Ninguna.
-Salidas: Las matrices de la variable global que tienen un 1 en las cuatro esquinas.
+Entradas: Ninguna.
+Salidas: Los identificadores de los cartones generados que tienen un "1" en las cuatro esquinas.
 Restricciones: No valida restricciones.
 '''
 def juegoCuatroEsquinas():
@@ -440,8 +441,8 @@ def juegoCuatroEsquinas():
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:Una matriz de 5x5.
-Salidas: Valida si todos los elementos de la matriz son uno retorna 1 si no retorna -1.
+Entradas: Una matriz de 5x5.
+Salidas: 1 si en todos los campos de la matriz hay un valor de "1", sino retorna -1.
 Restricciones: No valida restricciones.
 '''
 def cartonLleno(carton):
@@ -453,8 +454,8 @@ def cartonLleno(carton):
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:Ninguna.
-Salidas: Las matrices de la variable global cartonesBinarios que todos los elementos en ella sean 1.
+Entradas: Ninguna.
+Salidas: Los identificadores de los cartones generados que tienen un "1" en todos sus campos.
 Restricciones: No valida restricciones.
 '''
 def juegoCartonLleno():
@@ -471,8 +472,8 @@ def juegoCartonLleno():
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:Ninguna.
-Salidas: Las matrices de la variable global cartonesBinarios que todos los elementos en ella sean 1.
+Entradas: Ninguna.
+Salidas: 1 si en las diagonales diagonales principal y secundaria todos los tienen como valor "1", sino -1.
 Restricciones: No valida restricciones.
 '''
 def cartonX(carton):
@@ -498,7 +499,8 @@ def cartonX(carton):
 #-----------------------------------------------------------------------------------------------------------#
 '''
 Entradas:Ninguna.
-Salidas: Las matrices de la variable global cartonesBinarios que tengan una un uno en los espacios que forman una x en la matriz.
+Salidas: Los identificadores de los cartones generados que tienen un "1" en los campos de las diagonales 
+		 principal y secundaria de la matriz.
 Restricciones: No valida restricciones.
 '''
 def juegoCartonX():
@@ -516,7 +518,7 @@ def juegoCartonX():
 #-----------------------------------------------------------------------------------------------------------#
 '''
 Entradas:Ninguna.
-Salidas: Las matrices de la variable global cartonesBinarios que tengan una un uno en los espacios que forman una x en la matriz.
+Salidas: 1 si en los espacios que forman una Z en la matriz se tiene como valor "1", sino -1
 Restricciones: No valida restricciones.
 '''
 def cartonZ(carton):
@@ -540,8 +542,9 @@ def cartonZ(carton):
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:Ninguna.
-Salidas: Las matrices de la variable global cartonesBinarios que tengan una un uno en los espacios que forman una Z en la matriz.
+Entradas: Ninguna.
+Salidas: Los identificadores de los cartones generados que tienen un "1" en los campos que forman una Z en la 
+		 matriz.
 Restricciones: No valida restricciones.
 '''
 def juegoCartonZ():
@@ -558,8 +561,9 @@ def juegoCartonZ():
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:
-Salidas:
+Entradas: Una cadena de caracteres que indica el tipo de juego seleccionado.
+Salidas: Una lista con los identificadores retronados por alguna de las funciones que validan los valores de 
+		 los cartones generados para un tipo de juego seleccionado, o -1 si el tipo recibico no correspondiera
 Restricciones: 
 '''
 def validarTipoJuego(tipo):
@@ -581,8 +585,9 @@ def validarTipoJuego(tipo):
 #-----------------------------------------------------------------------------------------------------------#
 
 '''
-Entradas: Ninguna
-Salidas: Envía los cartones seleccionados al usuario recibido 
+Entradas: Una cadena con el correo al cual deben enviarse los cartones, y una lista con losidentificadores de
+		  los cartones que deben adjuntarse al mensaje. 
+Salidas: Envía los cartones recibidos al correo del usuario recibido. 
 Restricciones: No valida restricciones.
 '''
 def enviarCorreo(correo, cartonesPorAsignar):
@@ -593,10 +598,10 @@ def enviarCorreo(correo, cartonesPorAsignar):
 	correoReceptor = correo
 	contrasena = "cursoTEC2020"
 
-	message = MIMEMultipart("alternative")
-	message["Subject"] = "Cartón para Juego de Bingo"
-	message["From"] = correoDeEnvio
-	message["To"] = correoReceptor
+	mensaje = MIMEMultipart("alternative")
+	mensaje["Subject"] = "Cartón para Juego de Bingo"
+	mensaje["From"] = correoDeEnvio
+	mensaje["To"] = correoReceptor
 
 	text = """\¡Hola!</h1>
 	Parece que has sido invitado a participar en un juego de BINGO
@@ -610,8 +615,8 @@ def enviarCorreo(correo, cartonesPorAsignar):
 	parte1 = MIMEText(text, "plain")
 	parte2 = MIMEText(html, "html")
 
-	message.attach(parte1)
-	message.attach(parte2)
+	mensaje.attach(parte1)
+	mensaje.attach(parte2)
 
 	# for imagen in os.listdir('Cartones'): 
 	# 	if imagen.endswith('.png'):
@@ -628,14 +633,14 @@ def enviarCorreo(correo, cartonesPorAsignar):
 		   
 		adjunto.add_header('Content-Disposition', "attachment; filename= %s" % filename) 
 		  
-		message.attach(adjunto)
+		mensaje.attach(adjunto)
 
 	try:
 		context = ssl.create_default_context()
 		with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
 			server.login(correoDeEnvio, contrasena)
 			server.sendmail(
-			correoDeEnvio, correoReceptor, message.as_string()
+			correoDeEnvio, correoReceptor, mensaje.as_string()
 		)
 		jugadores+=1
 
@@ -644,84 +649,10 @@ def enviarCorreo(correo, cartonesPorAsignar):
 		print(e)
 		return -1
 
-'''
-Entradas: Ninguna
-Salidas: Envía el correo de notificación a los jugadores que resutaron ganadores  
-Restricciones: No valida restricciones.
-'''
-def enviarCorreoGanador(correo):
-
-	correoDeEnvio = "proyecto3bingo@gmail.com"
-	correoReceptor = correo
-	contrasena = "cursoTEC2020"
-
-	message = MIMEMultipart("alternative")
-	message["Subject"] = "Ganador del Bingo"
-	message["From"] = correoDeEnvio
-	message["To"] = correoReceptor
-
-	text = """\¡Muchas Felicidades!</h1>
-    Parece que has resultado ganador del juego de Bingo
-    Responde a este correo para conocer la forma en que recibirás tu premio."""
-
-	textoHTML = open("Recursos\plantillaGanador.html","r", encoding='utf-8')
-	html = textoHTML.read()
-	textoHTML.close()
-
-	parte1 = MIMEText(text, "plain")
-	parte2 = MIMEText(html, "html")
-
-	message.attach(parte1)
-	message.attach(parte2)
-
-	try:
-		context = ssl.create_default_context()
-		with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-			server.login(correoDeEnvio, contrasena)
-			server.sendmail(
-			correoDeEnvio, correoReceptor, message.as_string()
-		)
-
-		return 1
-	except Exception as e:
-		print(e)
-		return -1
-
-#-----------------------------------------------------------------------------------------------------------#
-'''
-Entradas: Lista de identificadores de los cartones ganadores
-Salidas: 
-		-> 1 si la cedula recibida se encuentra dentro de las de los jugadores registrados
-		-> -1 si la cedula recibida NO se encuentra dentro de las de los jugadores registrados
-Restricciones: No valida restricciones.
-'''
-def notificarGanadores(ganadores):
-	listaJugadores = leerArchivoCSV()
-	cartonEnLista=[]
-	correos = []
-
-	for i in range(0, len(cartonesAsignados)):
-		cartonEnLista=cartonesAsignados[i]
-		for j in range(0,len(ganadores)):
-			if (cartonEnLista[0]==ganadores[j]):
-				for k in range(0,len(listaJugadores)):
-					if(listaJugadores[k][1]==cartonEnLista[1]):
-						correos.append(listaJugadores[k][2]) 
-
-	for indice in range(0, len(correos)):
-		if(enviarCorreoGanador(correos[indice])==1):
-			break
-		else:
-			return -1
-
-	return 1
- 
 #-----------------------------------------------------------------------------------------------------------#
 '''
 Entradas: Cadena de caracteres con el valor de la cedula de un jugador y lista de cartones por asignar
-Salidas: 
-		-> 1 si la cedula recibida se encuentra dentro de las de los jugadores registrados
-		-> -1 si la cedula recibida NO se encuentra dentro de las de los jugadores registrados
+Salidas: 1 si la cedula recibida se encuentra dentro de las de los jugadores registrados o -1 si se encontrara
 Restricciones: No valida restricciones.
 '''
 def enviarCartones(pCedula, cartonesPorAsignar):
@@ -739,9 +670,99 @@ def enviarCartones(pCedula, cartonesPorAsignar):
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:
-Salidas:
-Restricciones: 
+Entradas: Una cadena con el correo al cual debe enviarse la notificación del ganador.
+Salidas: Envía el correo de notificación al jugador que haya resultado ganador.  
+Restricciones: No valida restricciones.
+'''
+def enviarCorreoGanador(correo):
+
+	correoDeEnvio = "proyecto3bingo@gmail.com"
+	correoReceptor = correo
+	contrasena = "cursoTEC2020"
+
+	mensaje = MIMEMultipart("alternative")
+	mensaje["Subject"] = "Ganador del Bingo"
+	mensaje["From"] = correoDeEnvio
+	mensaje["To"] = correoReceptor
+
+	text = """\¡Muchas Felicidades!</h1>
+    Parece que has resultado ganador del juego de Bingo
+    Responde a este correo para conocer la forma en que recibirás tu premio."""
+
+	textoHTML = open("Recursos\plantillaGanador.html","r", encoding='utf-8')
+	html = textoHTML.read()
+	textoHTML.close()
+
+	parte1 = MIMEText(text, "plain")
+	parte2 = MIMEText(html, "html")
+
+	mensaje.attach(parte1)
+	mensaje.attach(parte2)
+
+	try:
+		context = ssl.create_default_context()
+		with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+			server.login(correoDeEnvio, contrasena)
+			server.sendmail(
+			correoDeEnvio, correoReceptor, mensaje.as_string()
+		)
+
+		return 1
+	except Exception as e:
+		print(e)
+		return -1
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas: Una lista con elementos de un mismo tipo
+Salidas:La lista ingresada como parametro, omitiendo los valores que estuvieran repetidos dentro de esta.
+Restricciones:Ninguna
+'''
+def eliminarDuplicados(lista,nuevaLista=[]):
+    if (lista==[]):
+        return nuevaLista
+    else:
+        if (buscarElemento(nuevaLista,lista[0])==-1):
+            return eliminarDuplicados(lista[1:],nuevaLista+[lista[0]])
+        else:
+            return eliminarDuplicados(lista[1:],nuevaLista)
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas: Lista de identificadores de los cartones ganadores
+Salidas: 1 si la notificación por correo fue enviada correctamente, o -1 si esta no fuere enviada.
+Restricciones: No valida restricciones.
+'''
+def notificarGanadores(ganadores):
+	listaJugadores = leerArchivoCSV()
+	cartonEnLista=[]
+	correos = []
+
+	for i in range(0, len(cartonesAsignados)):
+		cartonEnLista=cartonesAsignados[i]
+		for j in range(0,len(ganadores)):
+			if (cartonEnLista[0]==ganadores[j]):
+				for k in range(0,len(listaJugadores)):
+					if(listaJugadores[k][1]==cartonEnLista[1]):
+						correos.append(listaJugadores[k][2]) 
+
+	correos = eliminarDuplicados(correos)
+	for indice in range(0, len(correos)):
+		if(enviarCorreoGanador(correos[indice])==1):
+			break
+		else:
+			return -1
+
+	return 1
+ 
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas: Un valor entero con la cantidad de cartones por asignar y la cedula del jugador l cual deben asignarse
+Salidas: 
+		--> la lista de los identificadores de los cartones que se encuentran disponibles para asignar.
+		--> -1 si se hubiera producido un error asignar los cartones disponibles a l numero de cedula recibido.
+		--> -2 en caso de que la cantidad requerida para asignar sea mayor a la cantidad de cartones disponibles.
+Restricciones: No valida restricciones.
 '''
 def asignarCartones(cantidad, cedula):
 	global cartonesAsignados
@@ -764,8 +785,8 @@ def asignarCartones(cantidad, cedula):
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:
-Salidas:
+Entradas: Ninguna.
+Salidas: La cantidad de los cartones generados que no han sido asignados a ningun jugador. 
 Restricciones: 
 '''
 def validarDisponibles():
@@ -778,10 +799,16 @@ def validarDisponibles():
 			cantidad+=1				
 	return cantidad	
 
+
+#///////////////////////////////////////////////////////////////////////////////////////////////////////////#
+# Funciones para Admin. de CSV
+#///////////////////////////////////////////////////////////////////////////////////////////////////////////#
+
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:
-Salidas:
+Entradas: Una cadena decaracteres que contiene la direccion de correo electronica ingresada para un jugador
+Salidas: True si la direccion ingresada corresponde a un formato valido para el correo electrónico, False en
+		 de que incumpla alguna de las delimitaciones sobre la estructura.
 Restricciones: 
 '''
 def validarCorreo(correo):
@@ -802,10 +829,6 @@ def validarCorreo(correo):
     else:
         return False
 
-#///////////////////////////////////////////////////////////////////////////////////////////////////////////#
-# Funciones para Admin. de CSV
-#///////////////////////////////////////////////////////////////////////////////////////////////////////////#
-
 #-----------------------------------------------------------------------------------------------------------#
 '''
 Entradas: Ninguna
@@ -825,6 +848,13 @@ Salidas: Se adiciona una nueva linea al archivo CSV con el nombre, la cedula y e
 Restricciones: No valida restricciones.
 '''
 def agregarJugadorCSV(nombre, cedula, correo):
+	try:
+		archivo = open("Recursos/jugadores.csv", mode='r')
+		archivo.close()
+	except IOError as e:
+		print("Creando archivo de Jugadores")
+		crearArchivoCSV()
+
 	try:
 		with open('Recursos/jugadores.csv', mode='a') as archivoCSV:
 			columnas = ['nombre', 'cedula', 'correo']
@@ -867,7 +897,7 @@ def leerArchivoCSV():
 #-----------------------------------------------------------------------------------------------------------#
 '''
 Entradas: Ninguna
-Salidas: Lista de CORREOS de los jugadores dentro del archivo CSV 
+Salidas: Lista de correos de los jugadores dentro del archivo CSV 
 Restricciones: No valida restricciones.
 '''
 def obtenerCorreos():
@@ -882,7 +912,7 @@ def obtenerCorreos():
 #-----------------------------------------------------------------------------------------------------------#
 '''
 Entradas: Ninguna
-Salidas: Lista de CEDULAS de los jugadores dentro del archivo CSV 
+Salidas: Lista de cédulas de los jugadores dentro del archivo CSV 
 Restricciones: No valida restricciones.
 '''
 def obtenerCedulas():
@@ -896,10 +926,8 @@ def obtenerCedulas():
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas: Cadena de caracteres con el valor de la cedula de un jugador
-Salidas: 
-		-> 1 si la cedula recibida se encuentra dentro de las de los jugadores registrados
-		-> -1 si la cedula recibida NO se encuentra dentro de las de los jugadores registrados
+Entradas: Cadena de caracteres con el valor de la cédula de un jugador
+Salidas: 1 si la cedula recibida se encuentra dentro de las de los jugadores registrados, sino -1 
 Restricciones: No valida restricciones.
 '''
 def validarCedula(pCedula):
