@@ -31,6 +31,7 @@ numerosCantados=""
 labelTotCartones=""
 labelTotJugadores=""
 tipoJuegoSeleccionado=""
+btnCantar=""
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -65,7 +66,7 @@ def comandoGenerarCartones():
 			cantidadNum = int(cantidadStr)
 
 			if (cantidadNum>=1 and cantidadNum<=500):
-
+				LDN.eliminarCartones()
 				resultado=messagebox.askquestion('Generar Cartones','¿Desea generar '+str(cantidadNum)+' cartones? \nEste proceso podría tomar un momento')
 
 				if (resultado=='yes'):
@@ -93,6 +94,7 @@ def comandoMostrarCarton():
 	global codigoCarton
 	global frameImagen
 	global subFrConsultar
+	global ventanaGestorBingos
 
 	codigo=codigoCarton.get()
 	if(LDN.contarCartones()!=0):
@@ -103,14 +105,15 @@ def comandoMostrarCarton():
 				valorRetorno = LDN.obtenerImagenCarton(codigo)
 
 				if(valorRetorno != -1):
-					# frameImagen.destroy()
-					# frameImagen = Frame(subFrConsultar, width=220, height=252)
-					# frameImagen.grid(row=2, column=1, padx=5, pady=5)
+					frameImagen.destroy()
+					frameImagen = Frame(subFrConsultar, width=220, height=252)
+					frameImagen.grid(row=2, column=1, padx=5, pady=5)
 					img = Image.open('Cartones\\'+codigo+'.png')
-					img.show()
-					# img = img.resize((220, 252), Image.BICUBIC)
-					# tkimage = ImageTk.PhotoImage(img)
-					# labelImage = Label(frameImagen, image=tkimage, width=220, height=252).pack()
+					# img.show()
+					img = img.resize((220, 252), Image.BICUBIC)
+					tkimage = ImageTk.PhotoImage(img)
+					labelImage = Label(frameImagen, image=tkimage, width=220, height=252).pack()
+					ventanaGestorBingos.mainloop()
 
 				else:
 					messagebox.showerror("Error al Obtener","No se ha podido obtener un cartón para el código ingresado. ")	
@@ -131,6 +134,7 @@ def comandoIniciarJuego():
 	global labelTotCartones
 	global labelTotJugadores
 	global tipoJuegoSeleccionado
+	global btnCantar
 
 	valoresJuego=[]
 
@@ -154,11 +158,14 @@ def comandoIniciarJuego():
 					if (resultado=='no'):
 						return
 				tipoJuegoSeleccionado=opcionJuego_StringVar.get()			
-				labelTipo.configure(text="Tipo de juego: "+opcionJuego_StringVar.get()) 
+				labelTipo.configure(text="Tipo de juego: "+opcionJuego_StringVar.get())
+				premioJuego.config(state="normal") 
 				premioJuego.insert(0, premio.get())
+				premioJuego.config(state="disabled")
 				labelTotCartones.configure(text="Total de Cartones: "+str(valoresJuego[1]))
 				labelTotJugadores.configure(text="Total de Jugadores: "+str(valoresJuego[0]))
 				premio.delete(0, END)
+				btnCantar.config(state="normal")
 
 
 #-----------------------------------------------------------------------------------------------------------#
@@ -174,6 +181,7 @@ def comandoCantarNumero():
 	global premioJuego
 	global labelTotCartones
 	global labelTotJugadores
+	global btnCantar
 
 	ganadores=[]
 	numeroCantado = LDN.cantarNumero()
@@ -198,9 +206,12 @@ def comandoCantarNumero():
 			if (resultado=='yes'):
 				txtNumCantados.delete(0.0, END)
 				labelTipo.configure(text="Tipo de juego:") 
+				premioJuego.config(state="normal") 
 				premioJuego.delete(0, END)
+				premioJuego.config(state="disabled")
 				labelTotCartones.configure(text="Total de Cartones: ")
 				labelTotJugadores.configure(text="Total de Jugadores: ")
+				btnCantar.config(state="disabled")
 
 	else:
 		messagebox.showerror("Error al Cantar","Se ha producido un error al cantar el número.")
@@ -305,6 +316,7 @@ def inicio():
 	global subFrConsultar
 	global labelTotCartones
 	global labelTotJugadores
+	global btnCantar
 
 	ventanaGestorBingos = Tk()
 	ventanaGestorBingos.title("Gestor de Bingos")
@@ -334,17 +346,17 @@ def inicio():
 	subFrGenerar.rowconfigure((0,1,2), weight=1)
 	subFrGenerar.columnconfigure((0,1,2), weight=1)
 	
-	label1 = Label(subFrGenerar, text="Generar Cartones de Bingo ", bg="#F8F9FA", fg="#2196f3", font=("Calibri", 16, "bold"))
+	label1 = Label(subFrGenerar, text="Generar Cartones de Bingo ", bg="#F8F9FA", fg="#ED7D31", font=("Calibri", 16, "bold"))
 	label1.grid(row=0, column=0, columnspan = 2, sticky="w", padx=5, pady=5)
 
-	label1_2 = Label(subFrGenerar, text="Cantidad: ", bg="#F8F9FA", fg="#2196f3", font=("Calibri", 14))
+	label1_2 = Label(subFrGenerar, text="Cantidad: ", bg="#F8F9FA", fg="#ED7D31", font=("Calibri", 14))
 	label1_2.grid(row=1, column=0, sticky="e", padx=5, pady=5)
 
 	cantidadCartones_StringVar = StringVar()
 	cantidadCartones = Entry(subFrGenerar, bg="#ffffff", fg="#000000", textvariable=cantidadCartones_StringVar, width="20", font=("Calibri", 18))
 	cantidadCartones.grid(row=1, column=1, padx=5, pady=5)
 
-	btnGenerar = Button(subFrGenerar, text="Generar", command=comandoGenerarCartones, bg="#2196f3", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
+	btnGenerar = Button(subFrGenerar, text="Generar", command=comandoGenerarCartones, bg="#ED7D31", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
 	btnGenerar.grid(row=1, column=2, padx=5, pady=5)
 
 	subFrGenerar.grid(row=0, column=0, padx=15, sticky="nsew", pady=15)
@@ -354,26 +366,26 @@ def inicio():
 	subFrConsultar.rowconfigure((0,1), weight=1)
 	subFrConsultar.columnconfigure((0,1,2), weight=1)
 
-	label2 = Label(subFrConsultar, text="Consultar Cartón: ", bg="#F8F9FA", fg="#2196f3", font=("Calibri", 16, "bold"))
+	label2 = Label(subFrConsultar, text="Consultar Cartón: ", bg="#F8F9FA", fg="#ED7D31", font=("Calibri", 16, "bold"))
 	label2.grid(row=0,column=0, columnspan = 2, sticky="w", padx=5)
 	
-	label2_2 = Label(subFrConsultar, text="Identificación: ", bg="#F8F9FA", fg="#2196f3", font=("Calibri", 14))
+	label2_2 = Label(subFrConsultar, text="Identificación: ", bg="#F8F9FA", fg="#ED7D31", font=("Calibri", 14))
 	label2_2.grid(row=1,column=0, sticky="e", padx=5, pady=5)
 
 	codigoCarton_StringVar = StringVar()
 	codigoCarton = Entry(subFrConsultar, bg="#ffffff", fg="#000000", textvariable=codigoCarton_StringVar, width="20", font=("Calibri", 18))
 	codigoCarton.grid(row=1,column=1, padx=5, pady=5)
 
-	btnMostrar = Button(subFrConsultar, text="Mostrar", command=comandoMostrarCarton, bg="#2196f3", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
+	btnMostrar = Button(subFrConsultar, text="Mostrar", command=comandoMostrarCarton, bg="#ED7D31", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
 	btnMostrar.grid(row=1, column=2, padx=5, pady=5)
 
 	frameImagen = Frame(subFrConsultar, width=220, height=252)
 	frameImagen.grid(row=2, column=1, padx=5, pady=5)
 
-	# img = Image.open('Cartones\AJZ126.png')
-	# img = img.resize((220, 252), Image.BICUBIC)
-	# tkimage = ImageTk.PhotoImage(img)
-	# labelImage = Label(frameImagen, width=220, height=252).pack()
+	img = Image.open('Recursos\PlantillaCarton.png')
+	img = img.resize((220, 252), Image.BICUBIC)
+	tkimage = ImageTk.PhotoImage(img)
+	labelImage = Label(frameImagen, image=tkimage, width=220, height=252).pack()
 
 	subFrConsultar.grid(row=1,column=0, padx=15, sticky="nsew", pady=15)
 
@@ -382,28 +394,28 @@ def inicio():
 	subFrConsultar.rowconfigure((0,1,2), weight=1)
 	subFrConsultar.columnconfigure((0,1,2,3), weight=1)
 	
-	label3 = Label(subFrIniciar, text="Iniciar juego de Bingo: ", bg="#F8F9FA", fg="#e64a19", font=("Calibri", 16, "bold"))
+	label3 = Label(subFrIniciar, text="Iniciar juego de Bingo: ", bg="#F8F9FA", fg="#2196f3", font=("Calibri", 16, "bold"))
 	label3.grid(row=0,column=0, columnspan = 2, sticky="w", padx=5)
 
-	label3_2 = Label(subFrIniciar, text="Configuración: ", bg="#F8F9FA", fg="#e64a19", font=("Calibri", 14))
+	label3_2 = Label(subFrIniciar, text="Configuración: ", bg="#F8F9FA", fg="#2196f3", font=("Calibri", 14))
 	label3_2.grid(row=1,column=0, sticky="e", padx=5, pady=5)
 
 	opciones = ( "Jugar en X", "Cuatro esquinas", "Cartón lleno", "Jugar en Z" ) 
 
 	opcionJuego_StringVar = StringVar()
 	opcionJuego = OptionMenu(subFrIniciar, opcionJuego_StringVar, *opciones)
-	opcionJuego.config(width=15, bg="#F8F9FA", fg="#e64a19", font=("Calibri", 14,))
+	opcionJuego.config(width=15, bg="#F8F9FA", fg="#2196f3", font=("Calibri", 14,))
 	opcionJuego.grid(row=1,column=1, padx=5, pady=5)
 	opcionJuego_StringVar.set("Jugar en X")
 
-	label3_3 = Label(subFrIniciar, text="Premio: ", bg="#F8F9FA", fg="#e64a19", font=("Calibri", 14))
+	label3_3 = Label(subFrIniciar, text="Premio: ", bg="#F8F9FA", fg="#2196f3", font=("Calibri", 14))
 	label3_3.grid(row=1,column=2, sticky="e", padx=5, pady=5)
 
 	premio_StringVar = StringVar()
 	premio = Entry(subFrIniciar, bg="#ffffff", fg="#000000", textvariable=premio_StringVar, width="20", font=("Calibri", 14,))
 	premio.grid(row=1,column=3, padx=5, pady=5)
 
-	btnIniciar = Button(subFrIniciar, text="Iniciar", command=comandoIniciarJuego, bg="#e64a19", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
+	btnIniciar = Button(subFrIniciar, text="Iniciar", command=comandoIniciarJuego, bg="#2196f3", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
 	btnIniciar.grid(row=2, column=1, columnspan = 2, sticky="e", padx=5, pady=5)
 
 	subFrIniciar.grid(row=0,column=0, padx=15, sticky="nsew", pady=15)
@@ -413,17 +425,17 @@ def inicio():
 	subFrJugar.rowconfigure((0,1,2,3), weight=1)
 	subFrJugar.columnconfigure((0,1,2,3), weight=1)
 
-	labelTipo = Label(subFrJugar, text="Tipo de juego: ", bg="#F8F9FA", fg="#e64a19", font=("Calibri", 14))
+	labelTipo = Label(subFrJugar, text="Tipo de juego: ", bg="#F8F9FA", fg="#2196f3", font=("Calibri", 14))
 	labelTipo.grid(row=0,column=0, sticky="w", padx=5)
 
-	label4_2 = Label(subFrJugar, text="Premio: ", bg="#F8F9FA", fg="#e64a19", font=("Calibri", 14))
+	label4_2 = Label(subFrJugar, text="Premio: ", bg="#F8F9FA", fg="#2196f3", font=("Calibri", 14))
 	label4_2.grid(row=0,column=2, sticky="e", padx=5, pady=5)
 
 	premioJuego_StringVar = StringVar()
-	premioJuego = Entry(subFrJugar, bg="#ffffff", fg="#000000", textvariable=premioJuego_StringVar, width="20", font=("Calibri", 14))
+	premioJuego = Entry(subFrJugar, bg="#ffffff", fg="#000000", textvariable=premioJuego_StringVar, state="disabled",  width="20", font=("Calibri", 14))
 	premioJuego.grid(row=0,column=3, padx=5, pady=5)
 
-	btnCantar = Button(subFrJugar, text="Cantar Número", command=comandoCantarNumero, bg="#e64a19", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
+	btnCantar = Button(subFrJugar, text="Cantar Número", command=comandoCantarNumero, bg="#2196f3", fg="#ffffff", state="disabled", relief=GROOVE, font=("Calibri", 14))
 	btnCantar.grid(row=1, column=1, columnspan = 2, padx=5, pady=5)
 
 	frameTexto = Frame(subFrJugar, width=75, height=50)
@@ -439,10 +451,10 @@ def inicio():
 
 	frameTexto.grid(row=2, column=0, columnspan = 5, padx=10, pady=10)
 
-	labelTotCartones = Label(subFrJugar, text="Total de Cartones: ", bg="#F8F9FA", fg="#e64a19", font=("Calibri", 11))
+	labelTotCartones = Label(subFrJugar, text="Total de Cartones: ", bg="#F8F9FA", fg="#2196f3", font=("Calibri", 11))
 	labelTotCartones.grid(row=3,column=0, sticky="w", padx=5, pady=5)
 
-	labelTotJugadores = Label(subFrJugar, text="Total de Jugadores: ", bg="#F8F9FA", fg="#e64a19", font=("Calibri", 11))
+	labelTotJugadores = Label(subFrJugar, text="Total de Jugadores: ", bg="#F8F9FA", fg="#2196f3", font=("Calibri", 11))
 	labelTotJugadores.grid(row=3,column=3, sticky="e", padx=5, pady=5)
 
 	subFrJugar.grid(row=1,column=0, padx=15, pady=15, sticky="nsew")

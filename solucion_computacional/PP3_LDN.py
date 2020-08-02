@@ -18,7 +18,7 @@ from PIL import Image, ImageDraw, ImageFont
 cartonesCompletos = []
 cartonesBinarios = []
 cartonesAsignados = []
-numerosCantados= []
+numerosCantados=[]
 jugadores=0
 
 #///////////////////////////////////////////////////////////////////////////////////////////////////////////#
@@ -122,11 +122,14 @@ def eliminarCartones():
 	global cartonesCompletos 
 	global cartonesBinarios 
 	global cartonesAsignados 
+	global jugadores
 
 	try:
 		cartonesCompletos = []
 		cartonesBinarios = []
 		cartonesAsignados = []
+		jugadores = 0
+		eliminarPNGCartones()
 		return 1
 	except Exception as e:
 		return -1
@@ -378,7 +381,9 @@ def obtenerValoresJuego():
 	global cartonesAsignados
 	global cartonesCompletos
 	global jugadores
+	global numerosCantados
 
+	numerosCantados=[]
 	cartonEnLista=[]
 	datosPorRetornar=[]
 	asignados=0
