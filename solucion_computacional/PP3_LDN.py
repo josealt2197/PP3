@@ -19,6 +19,7 @@ cartonesCompletos = []
 cartonesBinarios = []
 cartonesAsignados = []
 numerosCantados= []
+jugadores=0
 
 #///////////////////////////////////////////////////////////////////////////////////////////////////////////#
 # Funciones para Admin. de Cartones
@@ -376,19 +377,25 @@ Restricciones:
 def obtenerValoresJuego():
 	global cartonesAsignados
 	global cartonesCompletos
+	global jugadores
 
 	cartonEnLista=[]
 	datosPorRetornar=[]
-	jugadores=0
+	asignados=0
 
 	try:
+		datosPorRetornar.append(jugadores)
+		datosPorRetornar.append(contarCartones())
+
 		for i in range(0, len(cartonesAsignados)):
 			cartonEnLista=cartonesAsignados[i]
 			if (cartonEnLista[1]!=0):
-				jugadores+=1
+				asignados+=1
 
-		datosPorRetornar.append(jugadores)
-		datosPorRetornar.append(contarCartones())
+		if(asignados<len(cartonesAsignados)):
+			datosPorRetornar.append(-1)
+		else:
+			datosPorRetornar.append(1)
 
 		return datosPorRetornar
 
@@ -575,6 +582,8 @@ Restricciones: No valida restricciones.
 '''
 def enviarCorreo(correo, cartonesPorAsignar):
 
+	global jugadores
+
 	correoDeEnvio = "proyecto3bingo@gmail.com"
 	correoReceptor = correo
 	contrasena = "cursoTEC2020"
@@ -623,6 +632,7 @@ def enviarCorreo(correo, cartonesPorAsignar):
 			server.sendmail(
 			correoDeEnvio, correoReceptor, message.as_string()
 		)
+		jugadores+=1
 
 		return 1
 	except Exception as e:
@@ -671,10 +681,39 @@ def enviarCorreoGanador(correo):
 	except Exception as e:
 		print(e)
 		return -1
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas: Lista de identificadores de los cartones ganadores
+Salidas: 
+		-> 1 si la cedula recibida se encuentra dentro de las de los jugadores registrados
+		-> -1 si la cedula recibida NO se encuentra dentro de las de los jugadores registrados
+Restricciones: No valida restricciones.
+'''
+def notificarGanadores(ganadores):
+	listaJugadores = leerArchivoCSV()
+	cartonEnLista=[]
+	correos = []
+
+	for i in range(0, len(cartonesAsignados)):
+		cartonEnLista=cartonesAsignados[i]
+		for j in range(0,len(ganadores)):
+			if (cartonEnLista[0]==ganadores[j]):
+				for k in range(0,len(listaJugadores)):
+					if(listaJugadores[k][1]==cartonEnLista[1]):
+						correos.append(listaJugadores[k][2]) 
+
+	for indice in range(0, len(correos)):
+		if(enviarCorreoGanador(correos[indice])==1):
+			break
+		else:
+			return -1
+
+	return 1
  
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas: Cadena de caracteres con el valor de la cedula de un jugador
+Entradas: Cadena de caracteres con el valor de la cedula de un jugador y lista de cartones por asignar
 Salidas: 
 		-> 1 si la cedula recibida se encuentra dentro de las de los jugadores registrados
 		-> -1 si la cedula recibida NO se encuentra dentro de las de los jugadores registrados

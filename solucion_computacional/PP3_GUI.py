@@ -145,14 +145,20 @@ def comandoIniciarJuego():
 			if(valoresJuego!=[-1]):
 				if(valoresJuego[1]==0):
 					messagebox.showerror("Error de Juego","No se han generado los cartones del bingo. ")
+					return
 				elif(valoresJuego[0]==0):
 					messagebox.showwarning("Error de Juego","No se ha asignado ningún cartón. ")
-				else:
-					tipoJuegoSeleccionado=opcionJuego_StringVar.get()
-					labelTipo.configure(text="Tipo de juego: "+opcionJuego_StringVar.get()) 
-					premioJuego.insert(0, premio.get())
-					labelTotCartones.configure(text="Total de Cartones: "+str(valoresJuego[1]))
-					labelTotJugadores.configure(text="Total de Jugadores: "+str(valoresJuego[0]))
+					return
+				elif(valoresJuego[2]==-1):
+					resultado=messagebox.askquestion('Iniciar Juego','No se ha asignado todos los cartones. \n¿Desea iniciar el juego?')
+					if (resultado=='no'):
+						return
+				tipoJuegoSeleccionado=opcionJuego_StringVar.get()			
+				labelTipo.configure(text="Tipo de juego: "+opcionJuego_StringVar.get()) 
+				premioJuego.insert(0, premio.get())
+				labelTotCartones.configure(text="Total de Cartones: "+str(valoresJuego[1]))
+				labelTotJugadores.configure(text="Total de Jugadores: "+str(valoresJuego[0]))
+				premio.delete(0, END)
 
 
 #-----------------------------------------------------------------------------------------------------------#
@@ -185,8 +191,9 @@ def comandoCantarNumero():
 		elif(ganadores!=[]):
 			identificadores=""
 			for x in range(0,len(ganadores)):
-				identificadores=identificadores+str(ganadores[x])
-			messagebox.showinfo("Cartones Ganadores","¡Felicidades! Ha resultado ganador el cartón(es): "+identificadores)
+				identificadores=identificadores+" "+str(ganadores[x])
+			messagebox.showinfo("Cartones Ganadores","¡Felicidades! Ha resultado ganador el cartón(es): \n"+identificadores)
+			LDN.notificarGanadores(ganadores)
 			resultado=messagebox.askquestion('Terminar Juego','¿Desea terminar el juego en curso?')
 			if (resultado=='yes'):
 				txtNumCantados.delete(0.0, END)
@@ -216,8 +223,10 @@ def comandoRegistrarJugador():
 	if(nombre=="" or cedula=="" or correo==""):
 		messagebox.showwarning("Texto Vacío","Deben completarse todos los espacios.")	
 	else:
-		if(LDN.validarCedula(cedula)==1):
-			messagebox.showerror("Error en Cédula","El valor ingresado para la cédula, ya ha sido registrado.")	 
+		if(LDN.validarCedula(cedula)==1 or esNumero(cedula)==False):
+			messagebox.showwarning("Error en Cédula","El valor ingresado para la cédula ya ha sido registrado.")	 
+		elif(LDN.validarCorreo(correo)!=True):
+			messagebox.showwarning("Error en Correo","El valor ingresado para el correo no es una dirección válida.")
 		else:			
 			valorRetorno = LDN.agregarJugadorCSV(nombre, cedula, correo)
 
@@ -247,26 +256,27 @@ def comandoEnviarCartones():
 		messagebox.showerror("Error de Bingo","No se han generado los cartones del bingo. ")	
 	else:
 		if(cantidadEnviar.get() =="" or cedulaEnviar.get()==""):
-			messagebox.showwarning("Texto Vacío","Deben completarse todos los espacios.")
-			
-		elif(esNumero(cantidadEnviar.get())==True):
-				cedula=cedulaEnviar.get()
-				cantidad=int(cantidadEnviar.get())
+			messagebox.showwarning("Texto Vacío","Deben completarse todos los espacios.")			
+		elif(esNumero(cantidadEnviar.get())==False):
+			messagebox.showerror("Cantidad no válida","La cantidad debe ser un número entre 1 y el total de cartones generados.")
+		else:
+			cedula=cedulaEnviar.get()
+			cantidad=int(cantidadEnviar.get())
 
-				cartonesPorAsignar=LDN.asignarCartones(cantidad, cedula)
-				
-				if(cartonesPorAsignar==[-1]):
-					messagebox.showerror("Error en Cartones","Se ha producido un error al asignar los cartones.")
-				elif(cartonesPorAsignar==[-2]):
-					messagebox.showerror("Error en Cartones","No se tienen cartones suficientes diponibles para asignar.")
-				else:			
-					if(LDN.validarCedula(cedula)==1):
-						if(LDN.enviarCartones(cedula, cartonesPorAsignar)==1):
-							messagebox.showinfo("Cartones Enviados","Los cartones ha sido enviados al jugador.")
-							cantidadEnviar.delete(0,END) 
-							cedulaEnviar.delete(0,END)	
-					else:
-						messagebox.showerror("Error en Cédula","El valor ingresado para la cédula, no corresponde a ningún jugador.")	 
+			cartonesPorAsignar=LDN.asignarCartones(cantidad, cedula)
+			
+			if(cartonesPorAsignar==[-1]):
+				messagebox.showerror("Error en Cartones","Se ha producido un error al asignar los cartones.")
+			elif(cartonesPorAsignar==[-2]):
+				messagebox.showerror("Error en Cartones","No se tienen cartones suficientes diponibles para asignar.")
+			else:			
+				if(LDN.validarCedula(cedula)==1):
+					if(LDN.enviarCartones(cedula, cartonesPorAsignar)==1):
+						messagebox.showinfo("Cartones Enviados","Los cartones ha sido enviados al jugador.")
+						cantidadEnviar.delete(0,END) 
+						cedulaEnviar.delete(0,END)	
+				else:
+					messagebox.showerror("Error en Cédula","El valor ingresado para la cédula, no corresponde a ningún jugador.")	 
 
 
 #-----------------------------------------------------------------------------------------------------------#
