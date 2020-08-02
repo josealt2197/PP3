@@ -48,9 +48,9 @@ def esNumero(caracter):
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:
-Salidas:
-Restricciones:
+Entradas: Un número entero positivo en el espacio de Cantidad. 
+Salidas: Genera el número de cartones que se ingresó en el apartado de Generar Cartones del Bingo.
+Restricciones: el campo de cantidad debe contener un numero entero positivo.
 '''
 def comandoGenerarCartones():
 	global cantidadCartones
@@ -86,9 +86,10 @@ def comandoGenerarCartones():
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:
-Salidas:
-Restricciones:
+Entradas: Una identificacion de algun carton generado por el programa. 
+Salidas: Muestra en el apartado de Consultar Cartón, el carton ingresado en el espacio de identificación.
+Restricciones:en el espacio Indetificacion debe ingresarse una identificación de cartones que se hayan 
+              creado en el programa habierto 
 '''
 def comandoMostrarCarton():
 	global codigoCarton
@@ -122,9 +123,9 @@ def comandoMostrarCarton():
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:
-Salidas:
-Restricciones:
+Entradas: Ninguna
+Salidas: Inicia el juego validando cual modo de este es el escogido.
+Restricciones: No valida restricciones.
 '''
 def comandoIniciarJuego():
 	global opcionJuego_StringVar
@@ -170,9 +171,11 @@ def comandoIniciarJuego():
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:
-Salidas:
-Restricciones:
+Entradas: Ninguna 
+Salidas: Se actualiza el campo de números en el apartado de los numeros cantados,
+         en caso de existir un ganador del modo de juego escogido saltará un anuncio 
+         indicando los identificadoeres de los cartones ganadores. 
+Restricciones: No valida restricciones 
 '''
 def comandoCantarNumero():
 	global numerosCantados
@@ -218,9 +221,10 @@ def comandoCantarNumero():
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:
-Salidas:
-Restricciones:
+Entradas:El nobre de un jugador, su correo y su cedula 
+Salidas: En el caso de aber guardado de forma correcta los datos saltara un mensaje indicando,
+         cuando no suceda un error saltará una alerta del error 
+Restricciones: El correo debe ser valido y la en la cedula solo puede ingresar números 
 '''
 def comandoRegistrarJugador():
 	global nombreJugador
@@ -252,8 +256,8 @@ def comandoRegistrarJugador():
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:
-Salidas:
+Entradas: Un correo electronico
+Salidas: Se enviará un correo con la cantidad de cartones ingresados en el apartado de Enviar Cartón a Jugador Registrado
 Restricciones:
 '''
 def comandoEnviarCartones():
