@@ -341,13 +341,10 @@ def obtenerImagenCarton(codigo):
 	global cartonesAsignados
 
 	try:
-		for i in range(0, len(cartonesAsignados)):
-			cartonEnLista=cartonesAsignados[i]
-			if (cartonEnLista[0]==codigo):
-				return 1
-
+		img = Image.open('Cartones\\'+codigo+'.png')		
+		return 1
 	except Exception as e:
-		print(e)
+		# print(e)
 		return -1			
 
 #///////////////////////////////////////////////////////////////////////////////////////////////////////////#

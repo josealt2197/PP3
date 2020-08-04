@@ -110,7 +110,6 @@ def comandoMostrarCarton():
 					frameImagen = Frame(subFrConsultar, width=220, height=252)
 					frameImagen.grid(row=2, column=1, padx=5, pady=5)
 					img = Image.open('Cartones\\'+codigo+'.png')
-					# img.show()
 					img = img.resize((220, 252), Image.BICUBIC)
 					tkimage = ImageTk.PhotoImage(img)
 					labelImage = Label(frameImagen, image=tkimage, width=220, height=252).pack()
@@ -172,6 +171,25 @@ def comandoIniciarJuego():
 #-----------------------------------------------------------------------------------------------------------#
 '''
 Entradas: Ninguna 
+Salidas: En el caso de aber guardado de forma correcta los datos saltara un mensaje indicando,
+         cuando no suceda un error saltará una alerta del error 
+Restricciones: El correo debe ser valido y la en la cedula solo puede ingresar números 
+'''
+def comandoTerminarJuego():
+	txtNumCantados.config(state="normal") 
+	txtNumCantados.delete(0.0, END)
+	txtNumCantados.config(state="disabled")
+	labelTipo.configure(text="Tipo de juego:") 
+	premioJuego.config(state="normal") 
+	premioJuego.delete(0, END)
+	premioJuego.config(state="disabled")
+	labelTotCartones.configure(text="Total de Cartones: ")
+	labelTotJugadores.configure(text="Total de Jugadores: ")
+	btnCantar.config(state="disabled")
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas: Ninguna 
 Salidas: Se actualiza el campo de números en el apartado de los numeros cantados,
          en caso de existir un ganador del modo de juego escogido saltará un anuncio 
          indicando los identificadoeres de los cartones ganadores. 
@@ -193,8 +211,10 @@ def comandoCantarNumero():
 		messagebox.showwarning("Error al Cantar","Se han cantado todos los números posibles.")
 	elif(numeroCantado != -1):
 		numerosCantados = numerosCantados + " " +str(numeroCantado)
+		txtNumCantados.config(state="normal") 
 		txtNumCantados.delete(0.0, END)
 		txtNumCantados.insert(END, numerosCantados)
+		txtNumCantados.config(state="disabled")
 
 		ganadores = LDN.validarTipoJuego(tipoJuegoSeleccionado)
 		if(ganadores==[-1]):
@@ -207,21 +227,14 @@ def comandoCantarNumero():
 			LDN.notificarGanadores(ganadores)
 			resultado=messagebox.askquestion('Terminar Juego','¿Desea terminar el juego en curso?')
 			if (resultado=='yes'):
-				txtNumCantados.delete(0.0, END)
-				labelTipo.configure(text="Tipo de juego:") 
-				premioJuego.config(state="normal") 
-				premioJuego.delete(0, END)
-				premioJuego.config(state="disabled")
-				labelTotCartones.configure(text="Total de Cartones: ")
-				labelTotJugadores.configure(text="Total de Jugadores: ")
-				btnCantar.config(state="disabled")
+				comandoTerminarJuego()
 
 	else:
 		messagebox.showerror("Error al Cantar","Se ha producido un error al cantar el número.")
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:El nobre de un jugador, su correo y su cedula 
+Entradas:El nombre de un jugador, su correo y su cedula 
 Salidas: En el caso de aber guardado de forma correcta los datos saltara un mensaje indicando,
          cuando no suceda un error saltará una alerta del error 
 Restricciones: El correo debe ser valido y la en la cedula solo puede ingresar números 
@@ -283,7 +296,7 @@ def comandoEnviarCartones():
 			if(cartonesPorAsignar==[-1]):
 				messagebox.showerror("Error en Cartones","Se ha producido un error al asignar los cartones.")
 			elif(cartonesPorAsignar==[-2]):
-				messagebox.showerror("Error en Cartones","No se tienen cartones suficientes diponibles para asignar.")
+				messagebox.showerror("Error en Cartones","No se tienen cartones suficientes disponibles para asignar.")
 			else:			
 				if(LDN.validarCedula(cedula)==1):
 					if(LDN.enviarCartones(cedula, cartonesPorAsignar)==1):
@@ -324,10 +337,7 @@ def inicio():
 
 	ventanaGestorBingos = Tk()
 	ventanaGestorBingos.title("Gestor de Bingos")
-	#ventanaGestorBingos.geometry("800x500+250+5")
 	ventanaGestorBingos.iconbitmap("Recursos/icon.ico")
-	#ventanaGestorBingos.rowconfigure(0, minsize=800, weight=1)
-	#ventanaGestorBingos.columnconfigure(0, minsize=500, weight=1)
 	ventanaGestorBingos.config(bg="#F8F9FA")
 	ventanaGestorBingos.resizable(False, False) 
 
@@ -451,12 +461,15 @@ def inicio():
 	scrollbarTexto.pack(side=RIGHT,fill=Y)
 	txtNumCantados.pack(side=LEFT, fill=Y)
 	scrollbarTexto.config(command=txtNumCantados.yview)
-	txtNumCantados.config(yscrollcommand=scrollbarTexto.set)
+	txtNumCantados.config(yscrollcommand=scrollbarTexto.set, state="disabled")
 
 	frameTexto.grid(row=2, column=0, columnspan = 5, padx=10, pady=10)
 
 	labelTotCartones = Label(subFrJugar, text="Total de Cartones: ", bg="#F8F9FA", fg="#2196f3", font=("Calibri", 11))
 	labelTotCartones.grid(row=3,column=0, sticky="w", padx=5, pady=5)
+
+	btnTerminar = Button(subFrJugar, text="Terminar", command=comandoTerminarJuego, bg="#2196f3", fg="#ffffff", relief=GROOVE, font=("Calibri", 14))
+	btnTerminar.grid(row=3, column=2, padx=5, pady=5)
 
 	labelTotJugadores = Label(subFrJugar, text="Total de Jugadores: ", bg="#F8F9FA", fg="#2196f3", font=("Calibri", 11))
 	labelTotJugadores.grid(row=3,column=3, sticky="e", padx=5, pady=5)
