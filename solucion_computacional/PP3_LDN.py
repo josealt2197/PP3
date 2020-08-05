@@ -7,12 +7,13 @@ import os
 import sys
 import csv
 import random
-import smtplib, ssl
 from random import randint
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase 
+import smtplib, ssl
 from email import encoders
+from email.mime.base import MIMEBase 
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
 from PIL import Image, ImageDraw, ImageFont
 
 cartonesCompletos = []
@@ -591,56 +592,51 @@ def enviarCorreo(correo, cartonesPorAsignar):
 
 	global jugadores
 
-	correoDeEnvio = "proyecto3bingo@gmail.com"
-	correoReceptor = correo
-	contrasena = "cursoTEC2020"
+	emisor = 'proyecto3bingo@gmail.com'
+	receptor = correo
 
-	mensaje = MIMEMultipart("alternative")
-	mensaje["Subject"] = "Cartón para Juego de Bingo"
-	mensaje["From"] = correoDeEnvio
-	mensaje["To"] = correoReceptor
+	mensaje = MIMEMultipart('related')
+	mensaje['Subject'] = 'Invitación para Juego de Bingo'
+	mensaje['From'] = emisor
+	mensaje['To'] = receptor
+	mensaje.preamble = 'Carton(es) para Juego de Bingo'
+	
+	msgAlternative = MIMEMultipart('alternative')
+	mensaje.attach(msgAlternative)
 
-	text = """\¡Hola!</h1>
+	textoAlternativo = """¡Hola!
 	Parece que has sido invitado a participar en un juego de BINGO
 	Junto a este correo se han adjuntado los cartones para que puedas participar
 	¡Buena Suerte!"""
+	msgText = MIMEText(textoAlternativo)
+	msgAlternative.attach(msgText)
 
-	textoHTML = open("Recursos\plantillaCorreo.html","r", encoding='utf-8')
-	html = textoHTML.read()
-	textoHTML.close()
+	msgText = MIMEText('<img src="cid:image1">', 'html')
+	msgAlternative.attach(msgText)
 
-	parte1 = MIMEText(text, "plain")
-	parte2 = MIMEText(html, "html")
+	archivoImagen = open('Recursos\imagenCorreoCartones.png', 'rb')
+	msgImage = MIMEImage(archivoImagen.read())
+	archivoImagen.close()
 
-	mensaje.attach(parte1)
-	mensaje.attach(parte2)
+	msgImage.add_header('Content-ID', '<image1>')
+	mensaje.attach(msgImage)
 
-	# for imagen in os.listdir('Cartones'): 
-	# 	if imagen.endswith('.png'):
 	for i in range(0,len(cartonesPorAsignar)): 
-		filename = cartonesPorAsignar[i]+".png"
-		
+		filename = cartonesPorAsignar[i]+".png"		
 		attachment = open('Cartones/'+cartonesPorAsignar[i]+'.png', "rb")
   
-		adjunto = MIMEBase('application', 'octet-stream') 
-
-		adjunto.set_payload((attachment).read()) 
-
-		encoders.encode_base64(adjunto) 
-		   
-		adjunto.add_header('Content-Disposition', "attachment; filename= %s" % filename) 
-		  
-		mensaje.attach(adjunto)
+		cartonesAdjuntos = MIMEBase('application', 'octet-stream') 
+		cartonesAdjuntos.set_payload((attachment).read()) 
+		encoders.encode_base64(cartonesAdjuntos) 	   
+		cartonesAdjuntos.add_header('Content-Disposition', "attachment; filename= %s" % filename) 	  
+		mensaje.attach(cartonesAdjuntos)
 
 	try:
 		context = ssl.create_default_context()
 		with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-			server.login(correoDeEnvio, contrasena)
-			server.sendmail(
-			correoDeEnvio, correoReceptor, mensaje.as_string()
-		)
-		jugadores+=1
-
+		    server.login('proyecto3bingo@gmail.com', 'cursoTEC2020')
+		    server.sendmail(emisor, receptor, mensaje.as_string())
+		jugadores+=1	
 		return 1
 	except Exception as e:
 		print(e)
@@ -673,37 +669,39 @@ Restricciones: No valida restricciones.
 '''
 def enviarCorreoGanador(correo):
 
-	correoDeEnvio = "proyecto3bingo@gmail.com"
-	correoReceptor = correo
-	contrasena = "cursoTEC2020"
+	emisor = 'proyecto3bingo@gmail.com'
+	receptor = correo
 
-	mensaje = MIMEMultipart("alternative")
-	mensaje["Subject"] = "Ganador del Bingo"
-	mensaje["From"] = correoDeEnvio
-	mensaje["To"] = correoReceptor
+	mensaje = MIMEMultipart('related')
+	mensaje['Subject'] = 'Ganador del Bingo'
+	mensaje['From'] = emisor
+	mensaje['To'] = receptor
+	mensaje.preamble = 'Ganador del Bingo'
+	
+	msgAlternative = MIMEMultipart('alternative')
+	mensaje.attach(msgAlternative)
 
-	text = """\¡Muchas Felicidades!</h1>
+	textoAlternativo = """¡Muchas Felicidades!</h1>
     Parece que has resultado ganador del juego de Bingo
     Responde a este correo para conocer la forma en que recibirás tu premio."""
+	msgText = MIMEText(textoAlternativo)
+	msgAlternative.attach(msgText)
 
-	textoHTML = open("Recursos\plantillaGanador.html","r", encoding='utf-8')
-	html = textoHTML.read()
-	textoHTML.close()
+	msgText = MIMEText('<img src="cid:image1">', 'html')
+	msgAlternative.attach(msgText)
 
-	parte1 = MIMEText(text, "plain")
-	parte2 = MIMEText(html, "html")
+	archivoImagen = open('Recursos\imagenCorreoGanador.png', 'rb')
+	msgImage = MIMEImage(archivoImagen.read())
+	archivoImagen.close()
 
-	mensaje.attach(parte1)
-	mensaje.attach(parte2)
+	msgImage.add_header('Content-ID', '<image1>')
+	mensaje.attach(msgImage)
 
 	try:
 		context = ssl.create_default_context()
 		with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-			server.login(correoDeEnvio, contrasena)
-			server.sendmail(
-			correoDeEnvio, correoReceptor, mensaje.as_string()
-		)
-
+		    server.login('proyecto3bingo@gmail.com', 'cursoTEC2020')
+		    server.sendmail(emisor, receptor, mensaje.as_string())	
 		return 1
 	except Exception as e:
 		print(e)
