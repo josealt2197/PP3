@@ -32,10 +32,11 @@ labelTotCartones=""
 labelTotJugadores=""
 tipoJuegoSeleccionado=""
 btnCantar=""
+btnIniciar=""
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:Un caracter 
+Entradas:Un caracter o una cadena de caracteres  
 Salidas:True si el caracter es un numero o False si el caracter no es un numero con decimales
 Restricciones:No valida restricciones
 '''
@@ -65,11 +66,12 @@ def comandoGenerarCartones():
 		if(esNumero(cantidadStr)==True):
 			cantidadNum = int(cantidadStr)
 
-			if (cantidadNum>=1 and cantidadNum<=500):
-				LDN.eliminarCartones()
+			if (cantidadNum>=1 and cantidadNum<=500):			
 				resultado=messagebox.askquestion('Generar Cartones','¿Desea generar '+str(cantidadNum)+' cartones? \nEste proceso podría tomar un momento')
 
 				if (resultado=='yes'):
+
+					LDN.eliminarCartones()
 
 					valorRetorno = LDN.generarBingos(cantidadNum)
 
@@ -86,10 +88,9 @@ def comandoGenerarCartones():
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas: Una identificacion de algun carton generado por el programa. 
+Entradas: El identificador de algun carton generado por el programa. 
 Salidas: Muestra en el apartado de Consultar Cartón, el carton ingresado en el espacio de identificación.
-Restricciones:en el espacio Indetificacion debe ingresarse una identificación de cartones que se hayan 
-              creado en el programa habierto 
+Restricciones: Debe ingresarse una identificación de un carton que se haya creado en el programa abierto. 
 '''
 def comandoMostrarCarton():
 	global codigoCarton
@@ -98,25 +99,26 @@ def comandoMostrarCarton():
 	global ventanaGestorBingos
 
 	codigo=codigoCarton.get()
+
 	if(LDN.contarCartones()!=0):
 		if(codigo==""):
 			messagebox.showwarning("Texto Vacío","Deben ingresar un código para el identificador.")	
 		else:
 			
-				valorRetorno = LDN.obtenerImagenCarton(codigo)
+			valorRetorno = LDN.obtenerImagenCarton(codigo)
 
-				if(valorRetorno != -1):
-					frameImagen.destroy()
-					frameImagen = Frame(subFrConsultar, width=220, height=252)
-					frameImagen.grid(row=2, column=1, padx=5, pady=5)
-					img = Image.open('Cartones\\'+codigo+'.png')
-					img = img.resize((220, 252), Image.BICUBIC)
-					tkimage = ImageTk.PhotoImage(img)
-					labelImage = Label(frameImagen, image=tkimage, width=220, height=252).pack()
-					ventanaGestorBingos.mainloop()
+			if(valorRetorno != -1):
+				frameImagen.destroy()
+				frameImagen = Frame(subFrConsultar, width=220, height=252)
+				frameImagen.grid(row=2, column=1, padx=5, pady=5)
+				img = Image.open('Cartones\\'+codigo+'.png')
+				img = img.resize((220, 252), Image.BICUBIC)
+				tkimage = ImageTk.PhotoImage(img)
+				labelImage = Label(frameImagen, image=tkimage, width=220, height=252).pack()
+				ventanaGestorBingos.mainloop()
 
-				else:
-					messagebox.showerror("Error al Obtener","No se ha podido obtener un cartón para el código ingresado. ")	
+			else:
+				messagebox.showerror("Error al Obtener","No se ha podido obtener un cartón para el código ingresado. ")	
 	else:
 		messagebox.showerror("Error de Bingo","No se han generado los cartones del bingo. ")
 
@@ -135,6 +137,7 @@ def comandoIniciarJuego():
 	global labelTotJugadores
 	global tipoJuegoSeleccionado
 	global btnCantar
+	global btnIniciar
 
 	valoresJuego=[]
 
@@ -147,35 +150,49 @@ def comandoIniciarJuego():
 			valoresJuego = LDN.obtenerValoresJuego()
 
 			if(valoresJuego!=[-1]):
-				if(valoresJuego[1]==0):
-					messagebox.showerror("Error de Juego","No se han generado los cartones del bingo. ")
-					return
-				elif(valoresJuego[0]==0):
+				if(valoresJuego[0]==0):
 					messagebox.showwarning("Error de Juego","No se ha asignado ningún cartón. ")
+					return
+				elif(valoresJuego[1]==0):
+					messagebox.showerror("Error de Juego","No se han generado los cartones del bingo. ")
 					return
 				elif(valoresJuego[2]==-1):
 					resultado=messagebox.askquestion('Iniciar Juego','No se ha asignado todos los cartones. \n¿Desea iniciar el juego?')
 					if (resultado=='no'):
-						return
+						return	
+				
 				tipoJuegoSeleccionado=opcionJuego_StringVar.get()			
 				labelTipo.configure(text="Tipo de juego: "+opcionJuego_StringVar.get())
+
 				premioJuego.config(state="normal") 
 				premioJuego.insert(0, premio.get())
 				premioJuego.config(state="disabled")
+
 				labelTotCartones.configure(text="Total de Cartones: "+str(valoresJuego[1]))
 				labelTotJugadores.configure(text="Total de Jugadores: "+str(valoresJuego[0]))
+
 				premio.delete(0, END)
 				btnCantar.config(state="normal")
+				btnIniciar.config(state="disabled")
 
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
 Entradas: Ninguna 
-Salidas: En el caso de aber guardado de forma correcta los datos saltara un mensaje indicando,
-         cuando no suceda un error saltará una alerta del error 
-Restricciones: El correo debe ser valido y la en la cedula solo puede ingresar números 
+Salidas: Reiniciar los valores la sección de gestión del juego y habilitar el inicio de un juego nuevo. 
+Restricciones: No valida restricciones.  
 '''
 def comandoTerminarJuego():
+	global txtNumCantados
+	global labelTipo
+	global premioJuego
+	global labelTotCartones
+	global labelTotJugadores
+	global btnCantar
+	global btnIniciar
+	global numerosCantados
+
+	numerosCantados=""
 	txtNumCantados.config(state="normal") 
 	txtNumCantados.delete(0.0, END)
 	txtNumCantados.config(state="disabled")
@@ -186,6 +203,8 @@ def comandoTerminarJuego():
 	labelTotCartones.configure(text="Total de Cartones: ")
 	labelTotJugadores.configure(text="Total de Jugadores: ")
 	btnCantar.config(state="disabled")
+	btnIniciar.config(state="normal")
+
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -197,13 +216,7 @@ Restricciones: No valida restricciones
 '''
 def comandoCantarNumero():
 	global numerosCantados
-	global tipoJuegoSeleccionado
-	global labelTipo
-	global premioJuego
-	global labelTotCartones
-	global labelTotJugadores
-	global btnCantar
-
+	
 	ganadores=[]
 	numeroCantado = LDN.cantarNumero()
 
@@ -211,31 +224,59 @@ def comandoCantarNumero():
 		messagebox.showwarning("Error al Cantar","Se han cantado todos los números posibles.")
 	elif(numeroCantado != -1):
 		numerosCantados = numerosCantados + " " +str(numeroCantado)
+
 		txtNumCantados.config(state="normal") 
 		txtNumCantados.delete(0.0, END)
 		txtNumCantados.insert(END, numerosCantados)
 		txtNumCantados.config(state="disabled")
 
-		ganadores = LDN.validarTipoJuego(tipoJuegoSeleccionado)
-		if(ganadores==[-1]):
-			messagebox.showerror("Error al Validar","Se ha producido un error al validar el número cantado.")
-		elif(ganadores!=[]):
-			identificadores=""
-			for x in range(0,len(ganadores)):
-				identificadores=identificadores+" "+str(ganadores[x])
-			messagebox.showinfo("Cartones Ganadores","¡Felicidades! Ha resultado ganador el cartón(es): \n"+identificadores)
-			LDN.notificarGanadores(ganadores)
-			resultado=messagebox.askquestion('Terminar Juego','¿Desea terminar el juego en curso?')
-			if (resultado=='yes'):
-				comandoTerminarJuego()
+		validarGanadores()
 
 	else:
 		messagebox.showerror("Error al Cantar","Se ha producido un error al cantar el número.")
 
+
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas:El nombre de un jugador, su correo y su cedula 
-Salidas: En el caso de aber guardado de forma correcta los datos saltara un mensaje indicando,
+Entradas: Ninguna
+Salidas: Valida si alguno de los cartones cumple con las condiciones de gane del tipo de juego seleccionado,
+		 y muestra un mensaje con código de este cartón.
+Restricciones: No valida restricciones
+'''
+def validarGanadores():
+	global tipoJuegoSeleccionado
+	global btnCantar
+	global premioJuego
+
+	valorRetorno=0
+
+	ganadores = LDN.validarTipoJuego(tipoJuegoSeleccionado)
+
+	if(ganadores==[-1]):
+		messagebox.showerror("Error al Validar","Se ha producido un error al validar el número cantado.")
+	elif(ganadores!=[]):
+		identificadores=""
+		for x in range(0,len(ganadores)):
+			identificadores=identificadores+" "+str(ganadores[x])
+		messagebox.showinfo("Cartones Ganadores","¡Felicidades! Ha resultado ganador el cartón(es): \n"+identificadores)
+
+		premioJuego.config(state="normal") 
+		premio=premioJuego.get()
+		premioJuego.config(state="disabled")
+
+		valorRetorno = LDN.notificarGanadores(ganadores, premio)
+
+		if(valorRetorno==1):
+			messagebox.showinfo("Notificar Ganadores","Se ha enviado una notificación al correo del ganador(es)")
+		elif(valorRetorno==-2):
+			messagebox.showinfo("Notificar Ganadores","El cartón ganador na había sido asignado a ningún jugador.")
+
+		btnCantar.config(state="disabled")
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
+Entradas: El nombre de un jugador, su correo y su cedula 
+Salidas: En el caso de haber guardado de forma correcta los datos saltara un mensaje indicando,
          cuando no suceda un error saltará una alerta del error 
 Restricciones: El correo debe ser valido y la en la cedula solo puede ingresar números 
 '''
@@ -252,13 +293,13 @@ def comandoRegistrarJugador():
 		messagebox.showwarning("Texto Vacío","Deben completarse todos los espacios.")	
 	else:
 		if(LDN.validarCedula(cedula)==1 or esNumero(cedula)==False):
-			messagebox.showwarning("Error en Cédula","El valor ingresado para la cédula ya ha sido registrado.")	 
-		elif(LDN.validarCorreo(correo)!=True):
+			messagebox.showwarning("Error en Cédula","El valor ingresado para la cédula no es válido o ya ha sido registrado.")	 
+		elif(LDN.validarCorreo(correo)==False):
 			messagebox.showwarning("Error en Correo","El valor ingresado para el correo no es una dirección válida.")
 		else:			
 			valorRetorno = LDN.agregarJugadorCSV(nombre, cedula, correo)
 
-			if(valorRetorno != -1):
+			if(valorRetorno == 1):
 				messagebox.showinfo("Jugador Agregado","Los datos del jugador se han guardado con exito.")
 				nombreJugador.delete(0,END)
 				cedulaJugador.delete(0,END)
@@ -285,26 +326,26 @@ def comandoEnviarCartones():
 	else:
 		if(cantidadEnviar.get() =="" or cedulaEnviar.get()==""):
 			messagebox.showwarning("Texto Vacío","Deben completarse todos los espacios.")			
-		elif(esNumero(cantidadEnviar.get())==False):
+		elif(esNumero(cantidadEnviar.get())==False or int(cantidadEnviar.get())<0):
 			messagebox.showerror("Cantidad no válida","La cantidad debe ser un número entre 1 y el total de cartones generados.")
 		else:
 			cedula=cedulaEnviar.get()
 			cantidad=int(cantidadEnviar.get())
 
-			cartonesPorAsignar=LDN.asignarCartones(cantidad, cedula)
-			
-			if(cartonesPorAsignar==[-1]):
-				messagebox.showerror("Error en Cartones","Se ha producido un error al asignar los cartones.")
-			elif(cartonesPorAsignar==[-2]):
-				messagebox.showerror("Error en Cartones","No se tienen cartones suficientes disponibles para asignar.")
-			else:			
-				if(LDN.validarCedula(cedula)==1):
+			if(LDN.validarCedula(cedula)==1):
+				cartonesPorAsignar=LDN.asignarCartones(cantidad, cedula)
+				
+				if(cartonesPorAsignar==[-1]):
+					messagebox.showerror("Error en Cartones","Se ha producido un error al asignar los cartones.")
+				elif(cartonesPorAsignar==[-2]):
+					messagebox.showerror("Error en Cartones","No se tienen cartones suficientes disponibles para asignar.")
+				else:			
 					if(LDN.enviarCartones(cedula, cartonesPorAsignar)==1):
 						messagebox.showinfo("Cartones Enviados","Los cartones ha sido enviados al jugador.")
 						cantidadEnviar.delete(0,END) 
 						cedulaEnviar.delete(0,END)	
-				else:
-					messagebox.showerror("Error en Cédula","El valor ingresado para la cédula, no corresponde a ningún jugador.")	 
+			else:
+				messagebox.showerror("Error en Cédula","El valor ingresado para la cédula, no corresponde a ningún jugador.")	 
 
 
 #-----------------------------------------------------------------------------------------------------------#
@@ -334,6 +375,7 @@ def inicio():
 	global labelTotCartones
 	global labelTotJugadores
 	global btnCantar
+	global btnIniciar
 
 	ventanaGestorBingos = Tk()
 	ventanaGestorBingos.title("Gestor de Bingos")

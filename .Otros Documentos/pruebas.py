@@ -82,56 +82,70 @@
 #         return False
 
 
-# Send an HTML email with an embedded image and a plain text message for
-# email clients that don't want to display the HTML.
+# # Send an HTML email with an embedded image and a plain text message for
+# # email clients that don't want to display the HTML.
 
-import smtplib, ssl
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase 
-from email.mime.image import MIMEImage
+# import smtplib, ssl
+# from email.mime.text import MIMEText
+# from email.mime.multipart import MIMEMultipart
+# from email.mime.base import MIMEBase 
+# from email.mime.image import MIMEImage
 
-# Define these once; use them twice!
-emisor = 'proyecto3bingo@gmail.com'
-receptor = 'josealt2197@gmail.com'
+# # Define these once; use them twice!
+# emisor = 'proyecto3bingo@gmail.com'
+# receptor = 'josealt2197@gmail.com'
 
-# Create the root message and fill in the from, to, and subject headers
-mensaje = MIMEMultipart('related')
-mensaje['Subject'] = 'test message'
-mensaje['From'] = emisor
-mensaje['To'] = receptor
-mensaje.preamble = 'This is a multi-part message in MIME format.'
+# # Create the root message and fill in the from, to, and subject headers
+# mensaje = MIMEMultipart('related')
+# mensaje['Subject'] = 'test message'
+# mensaje['From'] = emisor
+# mensaje['To'] = receptor
+# mensaje.preamble = 'This is a multi-part message in MIME format.'
 
-# Encapsulate the plain and HTML versions of the message body in an
-# 'alternative' part, so message agents can decide which they want to display.
-msgAlternative = MIMEMultipart('alternative')
-mensaje.attach(msgAlternative)
+# # Encapsulate the plain and HTML versions of the message body in an
+# # 'alternative' part, so message agents can decide which they want to display.
+# msgAlternative = MIMEMultipart('alternative')
+# mensaje.attach(msgAlternative)
 
-msgText = MIMEText('This is the alternative plain text message.')
-msgAlternative.attach(msgText)
+# msgText = MIMEText('This is the alternative plain text message.')
+# msgAlternative.attach(msgText)
 
-# We reference the image in the IMG SRC attribute by the ID we give it below
-msgText = MIMEText('<b>Some <i>HTML</i> text</b> and an image.<br><img src="cid:image1"><br>Nifty!', 'html')
-msgAlternative.attach(msgText)
+# # We reference the image in the IMG SRC attribute by the ID we give it below
+# msgText = MIMEText('<b>Some <i>HTML</i> text</b> and an image.<br><img src="cid:image1"><br>Nifty!', 'html')
+# msgAlternative.attach(msgText)
 
-# This example assumes the image is in the current directory
-fp = open('imagenCorreoCartones.png', 'rb')
-msgImage = MIMEImage(fp.read())
-fp.close()
+# # This example assumes the image is in the current directory
+# fp = open('imagenCorreoCartones.png', 'rb')
+# msgImage = MIMEImage(fp.read())
+# fp.close()
 
-# Define the image's ID as referenced above
-msgImage.add_header('Content-ID', '<image1>')
-mensaje.attach(msgImage)
+# # Define the image's ID as referenced above
+# msgImage.add_header('Content-ID', '<image1>')
+# mensaje.attach(msgImage)
 
-# Send the email (this example assumes SMTP authentication is required)
+# # Send the email (this example assumes SMTP authentication is required)
 
-# smtp = smtplib.SMTP()
-# smtp.connect('smtp.gmail.com')
-# smtp.login('proyecto3taller@gmail.com', 'cursoTEC2020')
-# smtp.sendmail(emisor, receptor, mensaje.as_string())
-# smtp.quit()
+# # smtp = smtplib.SMTP()
+# # smtp.connect('smtp.gmail.com')
+# # smtp.login('proyecto3taller@gmail.com', 'cursoTEC2020')
+# # smtp.sendmail(emisor, receptor, mensaje.as_string())
+# # smtp.quit()
 
-context = ssl.create_default_context()
-with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-    server.login('proyecto3bingo@gmail.com', 'cursoTEC2020')
-    server.sendmail(emisor, receptor, mensaje.as_string())
+# context = ssl.create_default_context()
+# with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+#     server.login('proyecto3bingo@gmail.com', 'cursoTEC2020')
+#     server.sendmail(emisor, receptor, mensaje.as_string())
+
+from PIL import Image, ImageDraw, ImageFont
+
+def insertarPremio(premio, numero): 
+	
+	cartonBase = Image.open('imagenCorreoGanador.png')
+	draw = ImageDraw.Draw(cartonBase)
+	fuentePremio = ImageFont.truetype('arial.ttf', size=40)
+	color = 'rgb(185, 18, 27)'
+	
+	#Anotar el Premio al final de la imagen.	
+	draw.text((170, 580), premio, fill=color, font=fuentePremio) 
+
+	cartonBase.save(str(numero)+'.png')

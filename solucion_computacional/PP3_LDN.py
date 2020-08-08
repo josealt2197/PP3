@@ -98,10 +98,10 @@ def cantarNumero():
 	global numerosCantados
 	sys.setrecursionlimit(10000)
 	try:
-		if(len(numerosCantados)>=75):
-			return -2
 		numero = randint(1,75)
-		if(numero in numerosCantados):
+		if(len(numerosCantados)>=75):
+			return -2	
+		elif(numero in numerosCantados):
 			return cantarNumero()
 		else:
 			numerosCantados.append(numero)
@@ -144,16 +144,16 @@ Salidas: Una lista de 5 espacios con números diferentes en cada espacio, dentro
 		 entradas.
 Restricciones: No valida restricciones
 '''
-def crearFila(inicio,fin):
+def crearFila(inicio, fin, indiceFila=0, fila=[]):
 
-	indiceFila=0
-	fila=[]
-	while(indiceFila!=5):
+	if(indiceFila==5):
+		return fila
+	else:
 		num=randint(inicio,fin)
 		if(num not in fila):
-			fila.append(num)
-			indiceFila+=1
-	return fila	
+			return crearFila(inicio, fin, indiceFila+1, fila=fila+[num])
+		else:
+			return crearFila(inicio, fin, indiceFila, fila)
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -178,14 +178,14 @@ Entradas: Ninguna.
 Salidas: Un código aleatorio de 6 caracteres, los 3 primeros letras y los ultimos 3 son números entre 0 y 9 
 Restricciones: No valida restricciones.
 '''
-def generarIDCarton():
-	idLetras=""
-	idNumeros=""
-	for i in range(0,3):
-		idLetras=idLetras+(chr(random.randrange(97, 97 + 26)))
+def generarIDCarton(idLetras="", idNumeros="", contador=0):
+	
+	if(contador==3):
+		return idLetras.upper()+idNumeros
+	else:
+		idLetras = idLetras+(chr(random.randrange(97, 123)))
 		idNumeros= idNumeros+str(randint(0,9))
-
-	return idLetras.upper()+idNumeros
+		return generarIDCarton(idLetras, idNumeros, contador+1)
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -217,14 +217,16 @@ Salidas: 1 en el caso de que la matriz individual no se encuentre repetida en la
 		 hallara una matriz que coincida con la recibida.
 Restricciones: No valida restricciones.
 '''
-def validarCarton(listaCartones,carton):
+def validarCarton(listaCartones, carton, contador=0):
 
-	carton=carton[:-1]	
-	for i in range(0, len(listaCartones)):
-		cartonEnLista=listaCartones[i]
+	if(contador==len(listaCartones)):
+		return 1
+	else:
+		cartonEnLista=listaCartones[contador]
 		if (cartonEnLista[:-1]==carton):
 			return -1
-	return 1
+		else:
+			return validarCarton(listaCartones, carton, contador+1)
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -234,7 +236,6 @@ Restricciones: No valida restricciones.
 '''
 def generarBingos(cantidad, totalBingos=[]):
 	global cartonesCompletos
-	global cartonesAsignados
 
 	try:
 		if(cantidad==0):
@@ -244,13 +245,11 @@ def generarBingos(cantidad, totalBingos=[]):
 			if(generarImagenes()==1):	
 				return 1
 			else:
-				cartonesAsignados=[]
-				cartonesCompletos=[]
 				return -1
 		else:
 			carton=crearCarton()
 			if(totalBingos!=[]):
-				if(validarCarton(totalBingos,carton)==-1):
+				if(validarCarton(totalBingos,carton[:-1])==-1):
 					return generarBingos(cantidad, totalBingos)
 				else:
 					return generarBingos(cantidad-1, totalBingos=totalBingos+[carton])
@@ -345,7 +344,7 @@ def obtenerImagenCarton(codigo):
 		img = Image.open('Cartones\\'+codigo+'.png')		
 		return 1
 	except Exception as e:
-		# print(e)
+		print(e)
 		return -1			
 
 #///////////////////////////////////////////////////////////////////////////////////////////////////////////#
@@ -359,7 +358,6 @@ Salidas: La cantidad de elementos o cartones que se encuentran dentro de a lista
 Restricciones: No valida restricciones. 
 '''
 def contarCartones():
-	global cartonesAsignados
 	global cartonesCompletos
 
 	if(cartonesCompletos==[]):
@@ -378,7 +376,6 @@ Restricciones:
 '''
 def obtenerValoresJuego():
 	global cartonesAsignados
-	global cartonesCompletos
 	global jugadores
 	global numerosCantados
 
@@ -426,16 +423,15 @@ Entradas: Ninguna.
 Salidas: Los identificadores de los cartones generados que tienen un "1" en las cuatro esquinas.
 Restricciones: No valida restricciones.
 '''
-def juegoCuatroEsquinas():
-	global cartonesBinarios
+def juegoCuatroEsquinas(ganadores=[], contador=0):
+    global cartonesBinarios
 
-	ganadores=[]
-
-	for i in range(0,len(cartonesBinarios)):
-		if (cartonEsquinas(cartonesBinarios[i]) == 1):
-			ganadores=ganadores+[cartonesBinarios[i][5]]
-
-	return ganadores
+    if (contador==len(cartonesBinarios)):
+        return ganadores
+    else:
+        if (cartonEsquinas(cartonesBinarios[contador]) == 1):
+            ganadores=ganadores+[cartonesBinarios[contador][5]]
+        return juegoCuatroEsquinas(ganadores=ganadores, contador=contador+1)
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -456,17 +452,16 @@ Entradas: Ninguna.
 Salidas: Los identificadores de los cartones generados que tienen un "1" en todos sus campos.
 Restricciones: No valida restricciones.
 '''
-def juegoCartonLleno():
-
+def juegoCartonLleno(ganadores=[], contador=0):
 	global cartonesBinarios
 
-	ganadores=[]
+	if (contador==len(cartonesBinarios)):
+		return ganadores
+	else:
+		if (cartonLleno(cartonesBinarios[contador]) == 1):
+			ganadores=ganadores+[cartonesBinarios[contador][5]]
+		return juegoCartonLleno(ganadores=ganadores, contador=contador+1)
 
-	for i in range(0,len(cartonesBinarios)):
-		if (cartonLleno(cartonesBinarios[i]) == 1):
-			ganadores=ganadores+[cartonesBinarios[i][5]]
-
-	return ganadores
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -501,17 +496,15 @@ Salidas: Los identificadores de los cartones generados que tienen un "1" en los 
 		 principal y secundaria de la matriz.
 Restricciones: No valida restricciones.
 '''
-def juegoCartonX():
-
+def juegoCartonX(ganadores=[], contador=0):
 	global cartonesBinarios
 
-	ganadores=[]
-
-	for i in range(0,len(cartonesBinarios)):
-		if (cartonX(cartonesBinarios[i]) == 1):
-			ganadores=ganadores+[cartonesBinarios[i][5]]
-
-	return ganadores
+	if (contador==len(cartonesBinarios)):
+		return ganadores
+	else:
+		if (cartonX(cartonesBinarios[contador]) == 1):
+			ganadores=ganadores+[cartonesBinarios[contador][5]]
+		return juegoCartonX(ganadores=ganadores, contador=contador+1)
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -545,17 +538,15 @@ Salidas: Los identificadores de los cartones generados que tienen un "1" en los 
 		 matriz.
 Restricciones: No valida restricciones.
 '''
-def juegoCartonZ():
-
+def juegoCartonZ(ganadores=[], contador=0):
 	global cartonesBinarios
 
-	ganadores=[]
-
-	for i in range(0,len(cartonesBinarios)):
-		if (cartonZ(cartonesBinarios[i]) == 1):
-			ganadores=ganadores+[cartonesBinarios[i][5]]
-
-	return ganadores
+	if (contador==len(cartonesBinarios)):
+		return ganadores
+	else:
+		if (cartonZ(cartonesBinarios[contador]) == 1):
+			ganadores=ganadores+[cartonesBinarios[contador][5]]
+		return juegoCartonZ(ganadores=ganadores, contador=contador+1)
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -661,13 +652,33 @@ def enviarCartones(pCedula, cartonesPorAsignar):
 
 	return 1
 
+'''
+Entradas: Una cadena de caracteres y un entero.
+Salidas: Una imagen en formato png que representa la notificación para el ganador del juego de bingo.
+Restricciones: No valida restricciones.
+'''
+def insertarPremio(premio, numero): 
+	
+	cartonBase = Image.open('Recursos/imagenCorreoGanador.png')
+	draw = ImageDraw.Draw(cartonBase)
+	fuentePremio = ImageFont.truetype('arial.ttf', size=40)
+	color = 'rgb(185, 18, 27)'
+	
+	#Anotar el Premio al final de la imagen.	
+	draw.text((170, 580), premio, fill=color, font=fuentePremio) 
+
+	cartonBase.save('Cartones\\'+str(numero)+'.png')
+
+	return str(numero)+'.png'
+
+
 #-----------------------------------------------------------------------------------------------------------#
 '''
 Entradas: Una cadena con el correo al cual debe enviarse la notificación del ganador.
 Salidas: Envía el correo de notificación al jugador que haya resultado ganador.  
 Restricciones: No valida restricciones.
 '''
-def enviarCorreoGanador(correo):
+def enviarCorreoGanador(correo, premio, numeroGanador):
 
 	emisor = 'proyecto3bingo@gmail.com'
 	receptor = correo
@@ -690,7 +701,9 @@ def enviarCorreoGanador(correo):
 	msgText = MIMEText('<img src="cid:image1">', 'html')
 	msgAlternative.attach(msgText)
 
-	archivoImagen = open('Recursos\imagenCorreoGanador.png', 'rb')
+	imagenPremio=insertarPremio(premio, numeroGanador)
+
+	archivoImagen = open('Cartones\\'+imagenPremio, 'rb')
 	msgImage = MIMEImage(archivoImagen.read())
 	archivoImagen.close()
 
@@ -709,6 +722,35 @@ def enviarCorreoGanador(correo):
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
+Entradas: Una lista con varios elementos y una cadena de caracteres (
+Salidas: En caso de que se encuentre la palabra buscada dentro de la lista se retorna el valor numerico de la 
+         posicion en la que esta se encuentra, caso contrario la funcion retorna el valor numerico -1
+Restricciones: Ninguna.
+'''
+def buscarElemento(lista,palabra):
+    return buscarElementoAUX(lista,0,len(lista)-1,palabra)
+
+'''
+Entradas: Una lista con varios elementos, una cadena de caracteres (palabra), las posiciones de inicio y fin 
+          de la lista
+Salidas: En caso de que se encuentre la palabra buscada dentro de la lista se retorna el valor numerico de la 
+         posicion en la que esta se encuentra, caso contrario la funcion retorna el valor numerico -1
+Restricciones: Ninguna.
+'''
+def buscarElementoAUX(lista,inicio,fin,palabra):
+    mitad=(inicio+fin)//2
+    if (inicio>fin):
+        return -1
+    elif(lista[mitad]==palabra):
+        return mitad
+    elif(lista[mitad]>palabra):
+        return buscarElementoAUX(lista,inicio,mitad-1,palabra)
+    else:
+        return buscarElementoAUX(lista,mitad+1,fin,palabra)
+
+
+#-----------------------------------------------------------------------------------------------------------#
+'''
 Entradas: Una lista con elementos de un mismo tipo
 Salidas:La lista ingresada como parametro, omitiendo los valores que estuvieran repetidos dentro de esta.
 Restricciones:Ninguna
@@ -724,29 +766,38 @@ def eliminarDuplicados(lista,nuevaLista=[]):
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
-Entradas: Lista de identificadores de los cartones ganadores
+Entradas: Lista de identificadores de los cartones ganadores y el premio del juego
 Salidas: 1 si la notificación por correo fue enviada correctamente, o -1 si esta no fuere enviada.
 Restricciones: No valida restricciones.
 '''
-def notificarGanadores(ganadores):
+def notificarGanadores(ganadores, premio):
+	global cartonesAsignados
+	global cartonesCompletos
+
+	generarBinario(cartonesCompletos)
+
 	listaJugadores = leerArchivoCSV()
-	cartonEnLista=[]
-	correos = []
+	cartonAsignado=[]
+	correos=[]
 
 	for i in range(0, len(cartonesAsignados)):
-		cartonEnLista=cartonesAsignados[i]
+		cartonAsignado=cartonesAsignados[i]
 		for j in range(0,len(ganadores)):
-			if (cartonEnLista[0]==ganadores[j]):
+			if (cartonAsignado[0]==ganadores[j]):
 				for k in range(0,len(listaJugadores)):
-					if(listaJugadores[k][1]==cartonEnLista[1]):
+					if(listaJugadores[k][1]==cartonAsignado[1]):
 						correos.append(listaJugadores[k][2]) 
 
 	correos = eliminarDuplicados(correos)
-	for indice in range(0, len(correos)):
-		if(enviarCorreoGanador(correos[indice])==1):
-			break
-		else:
-			return -1
+
+	if(correos==[]):
+		return -2
+	else:	
+		for indice in range(0, len(correos)):
+			if(enviarCorreoGanador(correos[indice], premio, indice)==1):
+				break
+			else:
+				return -1
 
 	return 1
  
@@ -764,7 +815,7 @@ def asignarCartones(cantidad, cedula):
 
 	cartonesPorEnviar=[]
 
-	if(cantidad>validarDisponibles()):
+	if(cantidad>contarDisponibles()):
 		return [-2]
 
 	try:
@@ -784,7 +835,7 @@ Entradas: Ninguna.
 Salidas: La cantidad de los cartones generados que no han sido asignados a ningun jugador. 
 Restricciones: 
 '''
-def validarDisponibles():
+def contarDisponibles():
 	global cartonesAsignados
 
 	cantidad=0
@@ -843,10 +894,7 @@ Salidas: Se adiciona una nueva linea al archivo CSV con el nombre, la cedula y e
 Restricciones: No valida restricciones.
 '''
 def agregarJugadorCSV(nombre, cedula, correo):
-	try:
-		archivo = open("Recursos/jugadores.csv", mode='r')
-		archivo.close()
-	except IOError as e:
+	if(os.path.exists("Recursos/jugadores.csv")==False):
 		print("Creando archivo de Jugadores")
 		crearArchivoCSV()
 
@@ -854,8 +902,8 @@ def agregarJugadorCSV(nombre, cedula, correo):
 		with open('Recursos/jugadores.csv', mode='a') as archivoCSV:
 			columnas = ['nombre', 'cedula', 'correo']
 			writer = csv.DictWriter(archivoCSV, fieldnames=columnas)
-
 			writer.writerow({'nombre': nombre, 'cedula': cedula, 'correo': correo})
+		return 1
 	except Exception as e:
 		print(e)
 		return -1
@@ -881,6 +929,10 @@ Salidas: Lee el archivo jugadores.csv y lista los jugadores contenidos en este.
 Restricciones: No valida restricciones.
 '''
 def leerArchivoCSV():
+	if(os.path.exists("Recursos/jugadores.csv")==False):
+		print("Creando archivo de Jugadores")
+		crearArchivoCSV()
+
 	with open('Recursos/jugadores.csv', mode='r') as archivoCSV:
 		datosJugadores = csv.reader(archivoCSV)
 		listaJugadores = list(datosJugadores)
