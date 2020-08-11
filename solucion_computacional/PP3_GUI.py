@@ -33,6 +33,7 @@ labelTotJugadores=""
 tipoJuegoSeleccionado=""
 btnCantar=""
 btnIniciar=""
+labelAsignacion=""
 
 #-----------------------------------------------------------------------------------------------------------#
 '''
@@ -97,8 +98,10 @@ def comandoMostrarCarton():
 	global frameImagen
 	global subFrConsultar
 	global ventanaGestorBingos
+	global labelAsignacion
 
 	codigo=codigoCarton.get()
+	valorRetorno=[]
 
 	if(LDN.contarCartones()!=0):
 		if(codigo==""):
@@ -107,11 +110,17 @@ def comandoMostrarCarton():
 			
 			valorRetorno = LDN.obtenerImagenCarton(codigo)
 
-			if(valorRetorno != -1):
+			if(valorRetorno != [-1]):
+				
+				if(valorRetorno[0]!="0"):
+					labelAsignacion.configure(text=str(valorRetorno[1]+" - "+valorRetorno[0]))	
+				else:
+					labelAsignacion.configure(text="No asignado")
+
 				frameImagen.destroy()
 				frameImagen = Frame(subFrConsultar, width=220, height=252)
 				frameImagen.grid(row=2, column=1, padx=5, pady=5)
-				img = Image.open('Cartones\\'+codigo+'.png')
+				img = Image.open('Cartones\\'+valorRetorno[2]+'.png')
 				img = img.resize((220, 252), Image.BICUBIC)
 				tkimage = ImageTk.PhotoImage(img)
 				labelImage = Label(frameImagen, image=tkimage, width=220, height=252).pack()
@@ -376,6 +385,7 @@ def inicio():
 	global labelTotJugadores
 	global btnCantar
 	global btnIniciar
+	global labelAsignacion
 
 	ventanaGestorBingos = Tk()
 	ventanaGestorBingos.title("Gestor de Bingos")
@@ -419,7 +429,7 @@ def inicio():
 
 	# #Seccion para consultar los cartones-----------------------------------------------------------------#
 	subFrConsultar = Frame(frGestBingo, bg="#F8F9FA", borderwidth = 3, relief="ridge")
-	subFrConsultar.rowconfigure((0,1), weight=1)
+	subFrConsultar.rowconfigure((0,3), weight=1)
 	subFrConsultar.columnconfigure((0,1,2), weight=1)
 
 	label2 = Label(subFrConsultar, text="Consultar Cartón: ", bg="#F8F9FA", fg="#ED7D31", font=("Calibri", 16, "bold"))
@@ -442,6 +452,12 @@ def inicio():
 	img = img.resize((220, 252), Image.BICUBIC)
 	tkimage = ImageTk.PhotoImage(img)
 	labelImage = Label(frameImagen, image=tkimage, width=220, height=252).pack()
+
+	label2_3 = Label(subFrConsultar, text="Asignación: ", bg="#F8F9FA", fg="#ED7D31", font=("Calibri", 14))
+	label2_3.grid(row=3,column=0, sticky="e", padx=5, pady=5)
+
+	labelAsignacion = Label(subFrConsultar, text="", bg="#F8F9FA", fg="#000000", font=("Calibri", 14))
+	labelAsignacion.grid(row=3,column=1, sticky="w", padx=5, pady=5)
 
 	subFrConsultar.grid(row=1,column=0, padx=15, sticky="nsew", pady=15)
 

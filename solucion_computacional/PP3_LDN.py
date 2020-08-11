@@ -341,8 +341,24 @@ def obtenerImagenCarton(codigo):
 	global cartonesAsignados
 
 	try:
-		img = Image.open('Cartones\\'+codigo+'.png')		
-		return 1
+		img = Image.open('Cartones\\'+codigo+'.png')
+
+		listaJugadores=leerArchivoCSV()
+		listaRetorno=["0","0",0]
+
+		for i in range(0,len(cartonesAsignados)):
+			if(cartonesAsignados[i][0]==str(codigo) and cartonesAsignados[i][1]!=0):
+				listaRetorno[0]=cartonesAsignados[i][1]
+				break
+		
+		for j in range(0,len(listaJugadores)):
+			if(listaJugadores[j][1]==listaRetorno[0]):
+				listaRetorno[1]=listaJugadores[j][0]
+				break
+
+		listaRetorno[2]=codigo
+
+		return listaRetorno
 	except Exception as e:
 		print(e)
 		return -1			
