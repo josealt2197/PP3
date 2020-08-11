@@ -112,7 +112,7 @@ def comandoMostrarCarton():
 
 			if(valorRetorno != [-1]):
 				
-				if(valorRetorno[0]!="0"):
+				if(valorRetorno[0]!=0):
 					labelAsignacion.configure(text=str(valorRetorno[1]+" - "+valorRetorno[0]))	
 				else:
 					labelAsignacion.configure(text="No asignado")

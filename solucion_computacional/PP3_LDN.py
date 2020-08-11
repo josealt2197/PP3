@@ -344,7 +344,7 @@ def obtenerImagenCarton(codigo):
 		img = Image.open('Cartones\\'+codigo+'.png')
 
 		listaJugadores=leerArchivoCSV()
-		listaRetorno=["0","0",0]
+		listaRetorno=[0,0,0]
 
 		for i in range(0,len(cartonesAsignados)):
 			if(cartonesAsignados[i][0]==str(codigo) and cartonesAsignados[i][1]!=0):
